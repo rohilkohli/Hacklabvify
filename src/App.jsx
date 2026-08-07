@@ -204,13 +204,14 @@ export default function App() {
   const [sessionActive, setSessionActive] = useState(() => localStorage.getItem('hv_session') === 'true');
   const [customApiKey, setCustomApiKey] = useState(() => localStorage.getItem('hv_custom_api_key') || '');
   const [persona, setPersona] = useState(() => localStorage.getItem('hv_persona') || 'yc_partner');
+  const [activeRightTab, setActiveRightTab] = useState('ide'); // 'ide' | 'financials' | 'pitch'
+  const [showGuideBanner, setShowGuideBanner] = useState(true);
 
   // IDE Context Buffer states
   const [codeFilename, setCodeFilename] = useState('');
   const [codeContext, setCodeContext] = useState('');
   const [terminalErrors, setTerminalErrors] = useState('');
   const [attachedFile, setAttachedFile] = useState(null);
-  const [activeDeckTab, setActiveDeckTab] = useState(false);
 
   // Pitch Deck Builder state
   const [pitchSlides, setPitchSlides] = useState(() => {
@@ -719,12 +720,28 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
         /* ── Split Left & Right Columns ── */
         .chat-left-col { flex: 1.2; display: flex; flex-direction: column; border-right: 1px solid var(--card-border); background: var(--left-bg); height: 100%; }
-        .context-tools-col { flex: 0.9; display: flex; flex-direction: column; background: var(--right-bg); height: 100%; overflow-y: auto; padding: 20px 20px; gap: 14px; }
+        .context-tools-col { flex: 0.9; display: flex; flex-direction: column; background: var(--right-bg); height: 100%; overflow-y: auto; padding: 16px 18px; gap: 12px; }
         .context-tools-col::-webkit-scrollbar { width: 3px; }
         .context-tools-col::-webkit-scrollbar-thumb { background: var(--card-border); }
 
         .context-section {
           background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 14px;
+        }
+
+        /* ── Right Panel Category Tabs ── */
+        .right-tab-bar {
+          display: flex; gap: 4px; background: var(--input-bg); padding: 4px; border-radius: 14px; border: 1px solid var(--card-border);
+        }
+        .right-tab-btn {
+          flex: 1; background: transparent; border: none; padding: 6px 4px; border-radius: 10px;
+          font-size: 10.5px; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all 0.2s ease; text-align: center;
+        }
+        .right-tab-btn.active { background: var(--card-bg); color: #3B82F6; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+        /* ── Guided Onboarding Banner ── */
+        .guide-banner {
+          background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 14px;
+          padding: 10px 14px; margin-bottom: 12px; font-size: 11.5px;
         }
 
         /* ── Header Bar & Metric Badges ── */
@@ -754,7 +771,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .text-btn:hover { color: var(--accent-blue); }
 
         /* ── Chat Messages Timeline ── */
-        .chat-area { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+        .chat-area { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
         .chat-area::-webkit-scrollbar { width: 4px; }
         .chat-area::-webkit-scrollbar-thumb { background: var(--card-border); }
 
@@ -1018,6 +1035,21 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
                 {/* Chat Messages Timeline */}
                 <div className="chat-area">
+                  {/* Guided Onboarding Banner */}
+                  {showGuideBanner && (
+                    <div className="guide-banner">
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                        <strong style={{ color: '#3B82F6' }}>💡 Quick Guide to FounderNexus:</strong>
+                        <button style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '11px' }} onClick={() => setShowGuideBanner(false)}>✕ Dismiss</button>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                        <div>1️⃣ <strong>Choose Tone</strong> or click a Strategy Playbook chip below.</div>
+                        <div>2️⃣ <strong>(Optional) Paste Code</strong> or Errors in right panel tabs.</div>
+                        <div>3️⃣ <strong>Type Question</strong> & click Send to receive AI founder advice!</div>
+                      </div>
+                    </div>
+                  )}
+
                   {messages.map((msg, idx) => (
                     <div key={idx} className={`msg-row ${msg.role}`}>
                       {msg.role === 'assistant' && <BotAvatar />}
@@ -1092,10 +1124,10 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                 </footer>
               </div>
 
-              {/* Right Column: IDE & Co-Founder Context Tooling */}
+              {/* Right Column: Clean Tabbed IDE & Tooling Panel */}
               <div className="context-tools-col">
-                <div style={{ display: 'flex', alignItems: 'center', justifySelf: 'space-between', justifyContent: 'space-between' }}>
-                  <h3 className="context-title">IDE Context Tooling</h3>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <h3 className="context-title">Co-Founder Tooling</h3>
                   <div style={{ display: 'flex', gap: '4px' }}>
                     <button className="mini-link-btn" onClick={() => handleExportSession('txt')}>TXT</button>
                     <button className="mini-link-btn" onClick={() => handleExportSession('md')}>MD</button>
@@ -1103,11 +1135,8 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                   </div>
                 </div>
 
-                {/* Section 0: AI Persona Switcher */}
+                {/* Always-Visible Advisor Persona Switcher */}
                 <div>
-                  <div className="context-section-header">
-                    <h4>Advisor Tone</h4>
-                  </div>
                   <div className="persona-chip-group">
                     {ADVISOR_PERSONAS.map((p) => (
                       <div key={p.id} className={`persona-chip ${persona === p.id ? 'active' : ''}`} onClick={() => { setPersona(p.id); showToast(`Tone: ${p.name}`); }}>
@@ -1117,142 +1146,162 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                   </div>
                 </div>
 
-                {/* Section 1: Code & Architecture Context Buffer */}
-                <div className="context-section">
-                  <div className="context-section-header">
-                    <h4>Paste Code & Architecture Context</h4>
-                    <div>
-                      <button className="mini-link-btn" onClick={handleLoadSampleCode}>Sample</button>
-                      {codeContext && <button className="mini-link-btn" style={{ marginLeft: '6px', color: '#EF4444' }} onClick={() => setCodeContext('')}>Clear</button>}
-                    </div>
-                  </div>
-                  <input
-                    type="text"
-                    className="context-input"
-                    placeholder="Code Filename (e.g., App.jsx, schema.sql)"
-                    value={codeFilename}
-                    onChange={(e) => setCodeFilename(e.target.value)}
-                  />
-                  <textarea
-                    className="context-textarea large"
-                    style={{ marginTop: '6px' }}
-                    placeholder="Paste your raw code buffer or architecture spec here..."
-                    value={codeContext}
-                    onChange={(e) => setCodeContext(e.target.value)}
-                  />
-                  {/* Action Triggers for Code */}
-                  <div className="quick-trigger-group">
-                    <button className="btn-trigger-chip" onClick={handleRunCodeAudit}>🔍 Audit</button>
-                    <button className="btn-trigger-chip" onClick={handleRunCodeRefactor}>⚡ Refactor</button>
-                  </div>
+                {/* Right Category Tabs Bar */}
+                <div className="right-tab-bar">
+                  <button className={`right-tab-btn ${activeRightTab === 'ide' ? 'active' : ''}`} onClick={() => setActiveRightTab('ide')}>
+                    🛠️ Code & Error
+                  </button>
+                  <button className={`right-tab-btn ${activeRightTab === 'financials' ? 'active' : ''}`} onClick={() => setActiveRightTab('financials')}>
+                    📊 Financials & Market
+                  </button>
+                  <button className={`right-tab-btn ${activeRightTab === 'pitch' ? 'active' : ''}`} onClick={() => setActiveRightTab('pitch')}>
+                    🎴 Pitch & Saved
+                  </button>
                 </div>
 
-                {/* Section 2: Terminal & Build Tracebacks */}
-                <div className="context-section">
-                  <div className="context-section-header">
-                    <h4>Terminal & Build Tracebacks</h4>
-                    <div>
-                      <button className="mini-link-btn" onClick={handleLoadSampleError}>Sample</button>
-                      {terminalErrors && <button className="mini-link-btn" style={{ marginLeft: '6px', color: '#EF4444' }} onClick={() => setTerminalErrors('')}>Clear</button>}
-                    </div>
-                  </div>
-                  <textarea
-                    className="context-textarea"
-                    placeholder="Paste command line tracebacks, API errors, or build logs here..."
-                    value={terminalErrors}
-                    onChange={(e) => setTerminalErrors(e.target.value)}
-                  />
-                  {/* Action Triggers for Error */}
-                  <div className="quick-trigger-group">
-                    <button className="btn-trigger-chip" onClick={handleRunErrorDiagnosis}>🛠️ Auto-Fix Error</button>
-                  </div>
-                </div>
-
-                {/* Section 3: Financial Runway & Visual Gauge */}
-                <div className="context-section">
-                  <div className="context-section-header">
-                    <h4>Financial Runway Modeler</h4>
-                    <button className="mini-link-btn" onClick={handleAskFinancialOptimization}>⚡ AI Optimize</button>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                    <div>
-                      <label style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Cash ($)</label>
-                      <input type="number" className="context-input" value={cashBalance} onChange={(e) => setCashBalance(Number(e.target.value))} />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Expenses ($/mo)</label>
-                      <input type="number" className="context-input" value={monthlyExpenses} onChange={(e) => setMonthlyExpenses(Number(e.target.value))} />
-                    </div>
-                  </div>
-                  
-                  {/* Visual Runway Gauge */}
-                  <div className="gauge-bar-outer">
-                    <div className="gauge-bar-inner" style={{ width: `${gaugePercent}%`, backgroundColor: getGaugeColor() }} />
-                  </div>
-
-                  <div style={{ marginTop: '4px', fontSize: '11px', color: getGaugeColor(), fontWeight: 600 }}>
-                    Runway: {runwayMonths} Months | Net Burn: ${netBurn.toLocaleString()}/mo
-                  </div>
-                </div>
-
-                {/* Section 4: TAM / SAM / SOM Market Visual Diagram */}
-                <div className="context-section">
-                  <div className="context-section-header">
-                    <h4>TAM / SAM / SOM Market Size</h4>
-                  </div>
-                  <div className="tam-pyramid">
-                    <div className="tam-layer tam-layer-1">TAM: $45.0B Global Market</div>
-                    <div className="tam-layer tam-layer-2">SAM: $8.2B Founder Tooling</div>
-                    <div className="tam-layer tam-layer-3">SOM: $1.2B Target Copilots</div>
-                  </div>
-                </div>
-
-                {/* Section 5: Interactive 10-Slide Pitch Deck Cards */}
-                <div className="context-section">
-                  <div className="context-section-header">
-                    <h4>10-Slide Pitch Deck Cards</h4>
-                    <button className="mini-link-btn" onClick={() => setActiveDeckTab((prev) => !prev)}>{activeDeckTab ? 'Collapse' : 'Expand All'}</button>
-                  </div>
-                  {activeDeckTab && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '200px', overflowY: 'auto' }}>
-                      {pitchSlides.map((slide) => (
-                        <div key={slide.id} className="slide-card-item">
-                          <div className="slide-card-title">{slide.title}</div>
-                          <input
-                            type="text"
-                            className="context-input"
-                            style={{ fontSize: '10.5px', marginTop: '2px', padding: '4px 6px' }}
-                            value={slide.detail}
-                            onChange={(e) => handleUpdateSlideDetail(slide.id, e.target.value)}
-                          />
+                {/* TAB 1: IDE Code & Terminal Fixer */}
+                {activeRightTab === 'ide' && (
+                  <>
+                    <div className="context-section">
+                      <div className="context-section-header">
+                        <h4>Paste Code Buffer</h4>
+                        <div>
+                          <button className="mini-link-btn" onClick={handleLoadSampleCode}>Sample</button>
+                          {codeContext && <button className="mini-link-btn" style={{ marginLeft: '6px', color: '#EF4444' }} onClick={() => setCodeContext('')}>Clear</button>}
                         </div>
-                      ))}
+                      </div>
+                      <input
+                        type="text"
+                        className="context-input"
+                        placeholder="Filename (e.g., App.jsx, schema.sql)"
+                        value={codeFilename}
+                        onChange={(e) => setCodeFilename(e.target.value)}
+                      />
+                      <textarea
+                        className="context-textarea large"
+                        style={{ marginTop: '6px' }}
+                        placeholder="Paste code snippet to include in AI analysis..."
+                        value={codeContext}
+                        onChange={(e) => setCodeContext(e.target.value)}
+                      />
+                      <div className="quick-trigger-group">
+                        <button className="btn-trigger-chip" onClick={handleRunCodeAudit}>🔍 Audit Code</button>
+                        <button className="btn-trigger-chip" onClick={handleRunCodeRefactor}>⚡ Refactor Code</button>
+                      </div>
                     </div>
-                  )}
-                </div>
 
-                {/* Section 6: Bookmarked Insights */}
-                {savedInsights.length > 0 && (
-                  <div className="context-section">
-                    <div className="context-section-header">
-                      <h4>Bookmarked Insights ({savedInsights.length})</h4>
+                    <div className="context-section">
+                      <div className="context-section-header">
+                        <h4>Terminal Errors & Tracebacks</h4>
+                        <div>
+                          <button className="mini-link-btn" onClick={handleLoadSampleError}>Sample</button>
+                          {terminalErrors && <button className="mini-link-btn" style={{ marginLeft: '6px', color: '#EF4444' }} onClick={() => setTerminalErrors('')}>Clear</button>}
+                        </div>
+                      </div>
+                      <textarea
+                        className="context-textarea"
+                        placeholder="Paste CLI build errors or stack tracebacks..."
+                        value={terminalErrors}
+                        onChange={(e) => setTerminalErrors(e.target.value)}
+                      />
+                      <div className="quick-trigger-group">
+                        <button className="btn-trigger-chip" onClick={handleRunErrorDiagnosis}>🛠️ Auto-Fix Terminal Error</button>
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      {savedInsights.map((item) => (
-                        <div key={item.id} style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: '6px', padding: '6px 8px' }}>
-                          <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.4 }}>{item.snippet}</div>
-                          <div style={{ display: 'flex', gap: '6px', marginTop: '4px', justifyContent: 'flex-end' }}>
-                            <button className="mini-link-btn" onClick={() => handleCopyMessage(item.full)}>Copy</button>
-                            <button className="mini-link-btn" style={{ color: '#EF4444' }} onClick={() => handleDeleteBookmark(item.id)}>Remove</button>
+                  </>
+                )}
+
+                {/* TAB 2: Financials & Market Modelers */}
+                {activeRightTab === 'financials' && (
+                  <>
+                    <div className="context-section">
+                      <div className="context-section-header">
+                        <h4>Financial Runway Calculator</h4>
+                        <button className="mini-link-btn" onClick={handleAskFinancialOptimization}>⚡ AI Optimize</button>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                        <div>
+                          <label style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Cash ($)</label>
+                          <input type="number" className="context-input" value={cashBalance} onChange={(e) => setCashBalance(Number(e.target.value))} />
+                        </div>
+                        <div>
+                          <label style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Expenses ($/mo)</label>
+                          <input type="number" className="context-input" value={monthlyExpenses} onChange={(e) => setMonthlyExpenses(Number(e.target.value))} />
+                        </div>
+                      </div>
+                      
+                      <div className="gauge-bar-outer">
+                        <div className="gauge-bar-inner" style={{ width: `${gaugePercent}%`, backgroundColor: getGaugeColor() }} />
+                      </div>
+
+                      <div style={{ marginTop: '4px', fontSize: '11px', color: getGaugeColor(), fontWeight: 600 }}>
+                        Runway: {runwayMonths} Months | Net Burn: ${netBurn.toLocaleString()}/mo
+                      </div>
+                    </div>
+
+                    <div className="context-section">
+                      <div className="context-section-header">
+                        <h4>TAM / SAM / SOM Market Diagram</h4>
+                      </div>
+                      <div className="tam-pyramid">
+                        <div className="tam-layer tam-layer-1">TAM: $45.0B Global Market</div>
+                        <div className="tam-layer tam-layer-2">SAM: $8.2B Founder Tooling</div>
+                        <div className="tam-layer tam-layer-3">SOM: $1.2B Target Copilots</div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* TAB 3: Pitch Deck & Saved Insights */}
+                {activeRightTab === 'pitch' && (
+                  <>
+                    <div className="context-section">
+                      <div className="context-section-header">
+                        <h4>10-Slide Pitch Deck Builder</h4>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '220px', overflowY: 'auto' }}>
+                        {pitchSlides.map((slide) => (
+                          <div key={slide.id} className="slide-card-item">
+                            <div className="slide-card-title">{slide.title}</div>
+                            <input
+                              type="text"
+                              className="context-input"
+                              style={{ fontSize: '10.5px', marginTop: '2px', padding: '4px 6px' }}
+                              value={slide.detail}
+                              onChange={(e) => handleUpdateSlideDetail(slide.id, e.target.value)}
+                            />
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
+
+                    <div className="context-section">
+                      <div className="context-section-header">
+                        <h4>Bookmarked Insights ({savedInsights.length})</h4>
+                      </div>
+                      {savedInsights.length === 0 ? (
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic', padding: '4px 0' }}>
+                          No bookmarks saved yet. Click "Bookmark" under any AI message to save insights here!
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '160px', overflowY: 'auto' }}>
+                          {savedInsights.map((item) => (
+                            <div key={item.id} style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '6px 8px' }}>
+                              <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.4 }}>{item.snippet}</div>
+                              <div style={{ display: 'flex', gap: '6px', marginTop: '4px', justifyContent: 'flex-end' }}>
+                                <button className="mini-link-btn" onClick={() => handleCopyMessage(item.full)}>Copy</button>
+                                <button className="mini-link-btn" style={{ color: '#EF4444' }} onClick={() => handleDeleteBookmark(item.id)}>Remove</button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </>
                 )}
 
                 <div className="context-hint">
-                  <p>💡 <i>Any active Code, Terminal text, or Financial metrics entered here will be automatically extracted and bundled securely into your message when you hit the primary SEND button on the left!</i></p>
+                  <p>💡 <i>Active Code or Terminal text entered in tabs is automatically bundled into your prompts when you click Send!</i></p>
                 </div>
               </div>
             </>
