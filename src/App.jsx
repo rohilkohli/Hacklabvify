@@ -682,7 +682,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .main-container-card {
           width: 100%; max-width: 1100px; height: 88vh; max-height: 820px;
           background: var(--card-bg); border: 1px solid var(--card-border);
-          border-radius: 16px; box-shadow: var(--shadow); display: flex; overflow: hidden;
+          border-radius: 24px; box-shadow: var(--shadow); display: flex; overflow: hidden;
         }
 
         /* ── Start Mission / Welcome View ── */
@@ -698,7 +698,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
         .login-tips { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 480px; margin-bottom: 20px; }
         .tip-item {
-          background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 20px;
+          background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 16px;
           padding: 10px 16px; font-size: 12.5px; color: var(--text-secondary); text-align: left;
         }
 
@@ -706,7 +706,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
         .input-login {
           width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
-          border-radius: 8px; padding: 11px 14px; font-size: 13.5px; color: var(--text-primary); outline: none;
+          border-radius: 12px; padding: 11px 14px; font-size: 13.5px; color: var(--text-primary); outline: none;
         }
         .input-login:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px var(--accent-glow); }
 
@@ -719,9 +719,13 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
         /* ── Split Left & Right Columns ── */
         .chat-left-col { flex: 1.2; display: flex; flex-direction: column; border-right: 1px solid var(--card-border); background: var(--left-bg); height: 100%; }
-        .context-tools-col { flex: 0.9; display: flex; flex-direction: column; background: var(--right-bg); height: 100%; overflow-y: auto; padding: 20px 24px; gap: 16px; }
+        .context-tools-col { flex: 0.9; display: flex; flex-direction: column; background: var(--right-bg); height: 100%; overflow-y: auto; padding: 20px 20px; gap: 14px; }
         .context-tools-col::-webkit-scrollbar { width: 3px; }
         .context-tools-col::-webkit-scrollbar-thumb { background: var(--card-border); }
+
+        .context-section {
+          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 14px;
+        }
 
         /* ── Header Bar & Metric Badges ── */
         .chat-header {
@@ -734,7 +738,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
         .header-metric-badge {
           background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-secondary);
-          font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; display: flex; align-items: center; gap: 4px;
+          font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 12px; display: flex; align-items: center; gap: 4px;
         }
 
         .header-controls { display: flex; align-items: center; gap: 8px; }
@@ -764,10 +768,10 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         }
 
         .msg-bubble {
-          padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5;
+          padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.5;
         }
-        .msg-row.assistant .msg-bubble { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-primary); border-radius: 4px 14px 14px 14px; }
-        .msg-row.user .msg-bubble { background: var(--accent-blue); color: #FFF; border-radius: 14px 14px 4px 14px; }
+        .msg-row.assistant .msg-bubble { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-primary); border-radius: 6px 18px 18px 18px; }
+        .msg-row.user .msg-bubble { background: var(--accent-blue); color: #FFF; border-radius: 18px 18px 6px 18px; }
 
         .msg-bubble .md-heading { font-weight: 700; font-size: 13px; color: var(--text-primary); margin: 6px 0 3px; }
         .msg-bubble .md-paragraph { margin-bottom: 4px; }
@@ -776,7 +780,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .msg-actions { display: flex; gap: 4px; margin-top: 4px; }
         .msg-action-btn {
           background: transparent; border: 1px solid var(--card-border); color: var(--text-muted);
-          border-radius: 4px; padding: 2px 6px; font-size: 9.5px; cursor: pointer; transition: all 0.2s ease;
+          border-radius: 8px; padding: 2px 8px; font-size: 9.5px; cursor: pointer; transition: all 0.2s ease;
         }
         .msg-action-btn:hover { color: #3B82F6; border-color: #3B82F6; }
 
@@ -785,8 +789,8 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .suggestions-container::-webkit-scrollbar { height: 2px; }
 
         .suggestion-chip {
-          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px;
-          padding: 4px 12px; font-size: 11px; color: var(--text-secondary); cursor: pointer;
+          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px;
+          padding: 5px 14px; font-size: 11px; color: var(--text-secondary); cursor: pointer;
           white-space: nowrap; transition: all 0.2s ease; flex-shrink: 0;
         }
         .suggestion-chip:hover { border-color: var(--accent-blue); color: #3B82F6; background: var(--accent-glow); }
@@ -796,7 +800,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
         .input-pill {
           display: flex; align-items: center; gap: 8px; background: var(--input-bg);
-          border: 1px solid var(--input-border); border-radius: 24px; padding: 6px 14px;
+          border: 1px solid var(--input-border); border-radius: 28px; padding: 6px 14px;
         }
         .input-pill:focus-within { border-color: var(--accent-blue); }
 
@@ -828,8 +832,8 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .mini-link-btn:hover { text-decoration: underline; }
 
         .context-input, .context-textarea {
-          width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
-          border-radius: 6px; padding: 8px 10px; font-size: 12px; color: var(--text-primary);
+          width: 100%; background: var(--input-bg); border: 1px solid var(--card-border);
+          border-radius: 10px; padding: 8px 12px; font-size: 12px; color: var(--text-primary);
           outline: none; transition: border-color 0.2s ease;
         }
         .context-input:focus, .context-textarea:focus { border-color: var(--accent-blue); }
@@ -837,39 +841,39 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .context-textarea { font-family: 'JetBrains Mono', monospace; font-size: 11px; resize: vertical; min-height: 55px; }
         .context-textarea.large { min-height: 90px; }
 
-        .quick-trigger-group { display: flex; gap: 4px; margin-top: 4px; }
+        .quick-trigger-group { display: flex; gap: 4px; margin-top: 6px; }
         .btn-trigger-chip {
-          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 4px;
-          padding: 3px 6px; font-size: 10px; font-weight: 500; color: var(--text-secondary); cursor: pointer;
+          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px;
+          padding: 4px 8px; font-size: 10px; font-weight: 500; color: var(--text-secondary); cursor: pointer;
           transition: all 0.2s ease;
         }
         .btn-trigger-chip:hover { border-color: #3B82F6; color: #3B82F6; }
 
         /* ── Visual Gauge Bar & TAM Pyramid ── */
         .gauge-bar-outer {
-          width: 100%; height: 8px; background: var(--input-bg); border-radius: 4px; overflow: hidden; margin-top: 6px;
+          width: 100%; height: 8px; background: var(--input-bg); border-radius: 6px; overflow: hidden; margin-top: 6px;
         }
-        .gauge-bar-inner { height: 100%; border-radius: 4px; transition: width 0.4s ease, background-color 0.4s ease; }
+        .gauge-bar-inner { height: 100%; border-radius: 6px; transition: width 0.4s ease, background-color 0.4s ease; }
 
-        .tam-pyramid { display: flex; flex-direction: column; gap: 3px; margin-top: 6px; }
+        .tam-pyramid { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
         .tam-layer {
-          border-radius: 4px; padding: 4px 8px; font-size: 10px; font-weight: 600; text-align: center;
+          border-radius: 10px; padding: 5px 10px; font-size: 10px; font-weight: 600; text-align: center;
         }
         .tam-layer-1 { background: rgba(59, 130, 246, 0.15); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .tam-layer-2 { background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); width: 80%; align-self: center; }
-        .tam-layer-3 { background: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); width: 60%; align-self: center; }
+        .tam-layer-2 { background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); width: 85%; align-self: center; }
+        .tam-layer-3 { background: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); width: 68%; align-self: center; }
 
         /* ── Pitch Slide Card ── */
         .slide-card-item {
-          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 6px 8px; margin-bottom: 6px;
+          background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px;
         }
         .slide-card-title { font-size: 11px; font-weight: 700; color: #3B82F6; }
         .slide-card-detail { font-size: 10.5px; color: var(--text-secondary); margin-top: 2px; line-height: 1.3; }
 
         .persona-chip-group { display: flex; gap: 6px; }
         .persona-chip {
-          flex: 1; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px;
-          padding: 6px; font-size: 10.5px; font-weight: 600; color: var(--text-secondary); text-align: center;
+          flex: 1; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px;
+          padding: 7px 8px; font-size: 10.5px; font-weight: 600; color: var(--text-secondary); text-align: center;
           cursor: pointer; transition: all 0.2s ease;
         }
         .persona-chip.active { border-color: #3B82F6; color: #3B82F6; background: var(--accent-glow); }
@@ -879,14 +883,14 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px;
         }
         .modal-content {
-          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px;
-          width: 100%; max-width: 440px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow);
+          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px;
+          width: 100%; max-width: 440px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow);
         }
 
         .toast {
           position: fixed; bottom: 20px; right: 20px; z-index: 300; background: var(--card-bg);
           border: 1px solid var(--card-border); color: var(--text-primary); padding: 8px 14px;
-          border-radius: 8px; font-size: 12px; font-weight: 500; opacity: 0; transform: translateY(10px); transition: all 0.25s ease;
+          border-radius: 12px; font-size: 12px; font-weight: 500; opacity: 0; transform: translateY(10px); transition: all 0.25s ease;
         }
         .toast-visible { opacity: 1; transform: translateY(0); }
       `}</style>
