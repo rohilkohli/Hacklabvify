@@ -395,7 +395,8 @@ export default function App() {
         /* ── Dark Theme Variables ── */
         .theme-dark {
           --bg-dot: #121824;
-          --dot-color: rgba(255, 255, 255, 0.08);
+          --dot-color: rgba(255, 255, 255, 0.12);
+          --grid-line-color: rgba(255, 255, 255, 0.04);
           --card-bg: #1A212D;
           --card-border: #283344;
           --left-bg: #1A212D;
@@ -416,7 +417,8 @@ export default function App() {
         /* ── Light Theme Variables ── */
         .theme-light {
           --bg-dot: #F8FAFC;
-          --dot-color: rgba(0, 0, 0, 0.07);
+          --dot-color: rgba(71, 85, 105, 0.25);
+          --grid-line-color: rgba(203, 213, 225, 0.45);
           --card-bg: #FFFFFF;
           --card-border: #E2E8F0;
           --left-bg: #FFFFFF;
@@ -437,12 +439,15 @@ export default function App() {
         html, body, #root, .app-root { height: 100%; overflow: hidden; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-dot); color: var(--text-primary); transition: all 0.3s ease; }
 
-        /* ── Dot Grid Background with Floating Nodes ── */
+        /* ── Grid & Dot Background with Floating Nodes ── */
         .grid-background {
           position: fixed; inset: 0; z-index: 0; pointer-events: none;
           background-color: var(--bg-dot);
-          background-image: radial-gradient(var(--dot-color) 1.5px, transparent 1.5px);
-          background-size: 24px 24px;
+          background-image: 
+            radial-gradient(var(--dot-color) 1.5px, transparent 1.5px),
+            linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+          background-size: 24px 24px, 24px 24px, 24px 24px;
         }
 
         .floating-node {
