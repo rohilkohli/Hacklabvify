@@ -37,6 +37,19 @@ const QUICK_SUGGESTIONS = [
   { label: '📊 Financial Runway', prompt: 'Analyze our unit economics, CAC/LTV, burn rate, and runway optimization strategies.' }
 ];
 
+const INITIAL_PITCH_SLIDES = [
+  { id: 1, title: '1. Problem', detail: 'Founders lack immediate, data-driven co-founder advisory for critical strategic decisions.' },
+  { id: 2, title: '2. Solution', detail: 'FounderNexus: AI Co-Founder providing real-time market research, pitch outlines & financial runway modeling.' },
+  { id: 3, title: '3. Market Size (TAM)', detail: 'TAM: $45B Global Startup Software Market | SAM: $8.2B Founder Tooling | SOM: $1.2B AI Copilots.' },
+  { id: 4, title: '4. Product & Demo', detail: 'Dual-Column IDE Co-Founder Workspace, speech-to-text, live runway modeler & 1-click strategy playbooks.' },
+  { id: 5, title: '5. Business Model', detail: 'B2B SaaS Tiered Subscriptions ($49/mo Pro, $199/mo Scale, Enterprise Custom API).' },
+  { id: 6, title: '6. Competitive Moat', detail: 'Deep IDE context integration (Code + Terminal error tracebacks + live financial unit economics).' },
+  { id: 7, title: '7. Go-To-Market', detail: 'Product-led growth, developer community viral loops, YC/Techstars accelerator partnerships.' },
+  { id: 8, title: '8. Financial Projections', detail: 'ARR Growth: Year 1 $350k, Year 2 $1.8M, Year 3 $5.5M with 82% Gross Margins.' },
+  { id: 9, title: '9. Team', detail: 'Team CYBERNEX — AI Engineers & Product Designers specialized in LLM Agent System Architectures.' },
+  { id: 10, title: '10. The Ask', detail: 'Seeking $500k Pre-Seed to accelerate model fine-tuning, distribution partnerships & team expansion.' }
+];
+
 // ── Markdown Parser ──────────────────────────────────────────────
 function parseMarkdown(text) {
   if (!text) return null;
@@ -197,6 +210,15 @@ export default function App() {
   const [codeContext, setCodeContext] = useState('');
   const [terminalErrors, setTerminalErrors] = useState('');
   const [attachedFile, setAttachedFile] = useState(null);
+  const [activeDeckTab, setActiveDeckTab] = useState(false);
+
+  // Pitch Deck Builder state
+  const [pitchSlides, setPitchSlides] = useState(() => {
+    try {
+      const saved = localStorage.getItem('hv_pitch_slides');
+      return saved ? JSON.parse(saved) : INITIAL_PITCH_SLIDES;
+    } catch { return INITIAL_PITCH_SLIDES; }
+  });
 
   // Financial Runway Modeler states
   const [cashBalance, setCashBalance] = useState(() => Number(localStorage.getItem('hv_cash')) || 120000);
@@ -238,6 +260,7 @@ export default function App() {
   useEffect(() => { localStorage.setItem('hv_session', sessionActive); }, [sessionActive]);
   useEffect(() => { localStorage.setItem('hv_messages', JSON.stringify(messages)); }, [messages]);
   useEffect(() => { localStorage.setItem('hv_savedInsights', JSON.stringify(savedInsights)); }, [savedInsights]);
+  useEffect(() => { localStorage.setItem('hv_pitch_slides', JSON.stringify(pitchSlides)); }, [pitchSlides]);
   useEffect(() => { localStorage.setItem('hv_custom_api_key', customApiKey); }, [customApiKey]);
   useEffect(() => { localStorage.setItem('hv_persona', persona); }, [persona]);
   useEffect(() => { localStorage.setItem('hv_cash', cashBalance); }, [cashBalance]);
@@ -256,7 +279,7 @@ export default function App() {
 
   const activePersonaObj = ADVISOR_PERSONAS.find((p) => p.id === persona) || ADVISOR_PERSONAS[0];
 
-  const systemContext = `You are Hacklabvify AI Startup Copilot (Problem Statement 10 by Team CYBERNEX). ${activePersonaObj.desc}. Respond in ${language}. Founder: "${username}", Startup: "${startupName || 'DevPulse AI'}" (${stage} stage). Provide sharp, founder-level strategic advice. Format with bold terms, ## headers, and bullet points. Conclude with ## ⚡ Your Next 3 Actions. Keep response under 350 words.`;
+  const systemContext = `You are FounderNexus AI Startup Copilot (Problem Statement 10 by Team CYBERNEX). ${activePersonaObj.desc}. Respond in ${language}. Founder: "${username}", Startup: "${startupName || 'DevPulse AI'}" (${stage} stage). Provide sharp, founder-level strategic advice. Format with bold terms, ## headers, and bullet points. Conclude with ## ⚡ Your Next 3 Actions. Keep response under 350 words.`;
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -423,7 +446,7 @@ export default function App() {
     let ext = 'txt';
 
     if (format === 'json') {
-      text = JSON.stringify({ startup: { name: startupName, stage }, persona, language, messages, savedInsights }, null, 2);
+      text = JSON.stringify({ startup: { name: startupName, stage }, persona, language, messages, savedInsights, pitchSlides }, null, 2);
       mimeType = 'application/json';
       ext = 'json';
     } else if (format === 'md') {
@@ -438,7 +461,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${(startupName || 'hacklabvify').replace(/\s+/g, '-')}-copilot.${ext}`;
+    a.download = `${(startupName || 'foundernexus').replace(/\s+/g, '-')}-copilot.${ext}`;
     a.click();
     URL.revokeObjectURL(url);
     showToast(`Exported as .${ext}`);
@@ -504,13 +527,51 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
     showToast('Loaded sample terminal traceback');
   };
 
+  // Quick Action Triggers for Code & Terminal buffers
+  const handleRunCodeAudit = () => {
+    if (!codeContext.trim()) {
+      showToast('Paste or load code into buffer first');
+      return;
+    }
+    callGemini(`Perform a comprehensive security, performance, and code cleanliness audit on this code buffer (${codeFilename || 'code'}):`);
+  };
+
+  const handleRunCodeRefactor = () => {
+    if (!codeContext.trim()) {
+      showToast('Paste or load code into buffer first');
+      return;
+    }
+    callGemini(`Refactor and optimize this code buffer (${codeFilename || 'code'}) for maximum performance and clean design patterns:`);
+  };
+
+  const handleRunErrorDiagnosis = () => {
+    if (!terminalErrors.trim()) {
+      showToast('Paste or load terminal traceback first');
+      return;
+    }
+    callGemini(`Analyze the root cause and provide the exact step-by-step code fix for this terminal error traceback:`);
+  };
+
   // Financial calculations
   const netBurn = Math.max(0, monthlyExpenses - monthlyRevenue);
   const runwayMonths = netBurn > 0 ? (cashBalance / netBurn).toFixed(1) : '∞';
+  const runwayNum = Number(runwayMonths) || 0;
+  const gaugePercent = netBurn === 0 ? 100 : Math.min(100, Math.max(5, (runwayNum / 24) * 100));
+
+  const getGaugeColor = () => {
+    if (netBurn === 0 || runwayNum >= 12) return '#10B981'; // Green
+    if (runwayNum >= 6) return '#F59E0B'; // Yellow
+    return '#EF4444'; // Red
+  };
 
   const handleAskFinancialOptimization = () => {
     const prompt = `Analyze financial runway for ${startupName || 'our startup'}. Cash: $${cashBalance.toLocaleString()}, Expenses: $${monthlyExpenses.toLocaleString()}/mo, Revenue: $${monthlyRevenue.toLocaleString()}/mo. Net Burn: $${netBurn.toLocaleString()}/mo, Runway: ${runwayMonths} months. Provide ## Runway Analysis, ## Top 3 Cost Reduction Strategies, ## Revenue Acceleration Tactics, and ## ⚡ Your Next 3 Actions.`;
     callGemini(prompt);
+  };
+
+  // Update pitch slide helper
+  const handleUpdateSlideDetail = (id, newDetail) => {
+    setPitchSlides((prev) => prev.map((s) => s.id === id ? { ...s, detail: newDetail } : s));
   };
 
   return (
@@ -662,14 +723,19 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .context-tools-col::-webkit-scrollbar { width: 3px; }
         .context-tools-col::-webkit-scrollbar-thumb { background: var(--card-border); }
 
-        /* ── Header Bar ── */
+        /* ── Header Bar & Metric Badges ── */
         .chat-header {
-          padding: 14px 20px; border-bottom: 1px solid var(--card-border); background: var(--header-bg);
+          padding: 12px 20px; border-bottom: 1px solid var(--card-border); background: var(--header-bg);
           display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
         }
 
         .codelab-title { display: flex; align-items: center; gap: 8px; }
         .codelab-title h2 { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: #3B82F6; }
+
+        .header-metric-badge {
+          background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-secondary);
+          font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; display: flex; align-items: center; gap: 4px;
+        }
 
         .header-controls { display: flex; align-items: center; gap: 8px; }
         .user-badge {
@@ -768,10 +834,37 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         }
         .context-input:focus, .context-textarea:focus { border-color: var(--accent-blue); }
 
-        .context-textarea { font-family: 'JetBrains Mono', monospace; font-size: 11px; resize: vertical; min-height: 60px; }
-        .context-textarea.large { min-height: 100px; }
+        .context-textarea { font-family: 'JetBrains Mono', monospace; font-size: 11px; resize: vertical; min-height: 55px; }
+        .context-textarea.large { min-height: 90px; }
 
-        .context-hint { font-size: 10.5px; color: var(--text-muted); line-height: 1.5; font-style: italic; }
+        .quick-trigger-group { display: flex; gap: 4px; margin-top: 4px; }
+        .btn-trigger-chip {
+          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 4px;
+          padding: 3px 6px; font-size: 10px; font-weight: 500; color: var(--text-secondary); cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .btn-trigger-chip:hover { border-color: #3B82F6; color: #3B82F6; }
+
+        /* ── Visual Gauge Bar & TAM Pyramid ── */
+        .gauge-bar-outer {
+          width: 100%; height: 8px; background: var(--input-bg); border-radius: 4px; overflow: hidden; margin-top: 6px;
+        }
+        .gauge-bar-inner { height: 100%; border-radius: 4px; transition: width 0.4s ease, background-color 0.4s ease; }
+
+        .tam-pyramid { display: flex; flex-direction: column; gap: 3px; margin-top: 6px; }
+        .tam-layer {
+          border-radius: 4px; padding: 4px 8px; font-size: 10px; font-weight: 600; text-align: center;
+        }
+        .tam-layer-1 { background: rgba(59, 130, 246, 0.15); color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .tam-layer-2 { background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); width: 80%; align-self: center; }
+        .tam-layer-3 { background: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); width: 60%; align-self: center; }
+
+        /* ── Pitch Slide Card ── */
+        .slide-card-item {
+          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 6px 8px; margin-bottom: 6px;
+        }
+        .slide-card-title { font-size: 11px; font-weight: 700; color: #3B82F6; }
+        .slide-card-detail { font-size: 10.5px; color: var(--text-secondary); margin-top: 2px; line-height: 1.3; }
 
         .persona-chip-group { display: flex; gap: 6px; }
         .persona-chip {
@@ -899,6 +992,16 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                   <div className="codelab-title">
                     <span style={{ color: '#3B82F6' }}>🔹</span>
                     <h2>{startupName || 'FounderNexus | AI Startup Copilot'}</h2>
+                  </div>
+
+                  {/* Header Live Metric Badges */}
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <span className="header-metric-badge" style={{ color: getGaugeColor() }}>
+                      Runway: {runwayMonths} Mo
+                    </span>
+                    <span className="header-metric-badge">
+                      Burn: ${netBurn.toLocaleString()}/mo
+                    </span>
                   </div>
 
                   <div className="header-controls">
@@ -1033,6 +1136,11 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                     value={codeContext}
                     onChange={(e) => setCodeContext(e.target.value)}
                   />
+                  {/* Action Triggers for Code */}
+                  <div className="quick-trigger-group">
+                    <button className="btn-trigger-chip" onClick={handleRunCodeAudit}>🔍 Audit</button>
+                    <button className="btn-trigger-chip" onClick={handleRunCodeRefactor}>⚡ Refactor</button>
+                  </div>
                 </div>
 
                 {/* Section 2: Terminal & Build Tracebacks */}
@@ -1050,12 +1158,16 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                     value={terminalErrors}
                     onChange={(e) => setTerminalErrors(e.target.value)}
                   />
+                  {/* Action Triggers for Error */}
+                  <div className="quick-trigger-group">
+                    <button className="btn-trigger-chip" onClick={handleRunErrorDiagnosis}>🛠️ Auto-Fix Error</button>
+                  </div>
                 </div>
 
-                {/* Section 3: Financial Runway & Unit Economics */}
+                {/* Section 3: Financial Runway & Visual Gauge */}
                 <div className="context-section">
                   <div className="context-section-header">
-                    <h4>Financial Runway & Unit Economics</h4>
+                    <h4>Financial Runway Modeler</h4>
                     <button className="mini-link-btn" onClick={handleAskFinancialOptimization}>⚡ AI Optimize</button>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
@@ -1068,12 +1180,54 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                       <input type="number" className="context-input" value={monthlyExpenses} onChange={(e) => setMonthlyExpenses(Number(e.target.value))} />
                     </div>
                   </div>
-                  <div style={{ marginTop: '6px', fontSize: '11px', color: '#3B82F6', fontWeight: 600 }}>
+                  
+                  {/* Visual Runway Gauge */}
+                  <div className="gauge-bar-outer">
+                    <div className="gauge-bar-inner" style={{ width: `${gaugePercent}%`, backgroundColor: getGaugeColor() }} />
+                  </div>
+
+                  <div style={{ marginTop: '4px', fontSize: '11px', color: getGaugeColor(), fontWeight: 600 }}>
                     Runway: {runwayMonths} Months | Net Burn: ${netBurn.toLocaleString()}/mo
                   </div>
                 </div>
 
-                {/* Section 4: Bookmarked Insights */}
+                {/* Section 4: TAM / SAM / SOM Market Visual Diagram */}
+                <div className="context-section">
+                  <div className="context-section-header">
+                    <h4>TAM / SAM / SOM Market Size</h4>
+                  </div>
+                  <div className="tam-pyramid">
+                    <div className="tam-layer tam-layer-1">TAM: $45.0B Global Market</div>
+                    <div className="tam-layer tam-layer-2">SAM: $8.2B Founder Tooling</div>
+                    <div className="tam-layer tam-layer-3">SOM: $1.2B Target Copilots</div>
+                  </div>
+                </div>
+
+                {/* Section 5: Interactive 10-Slide Pitch Deck Cards */}
+                <div className="context-section">
+                  <div className="context-section-header">
+                    <h4>10-Slide Pitch Deck Cards</h4>
+                    <button className="mini-link-btn" onClick={() => setActiveDeckTab((prev) => !prev)}>{activeDeckTab ? 'Collapse' : 'Expand All'}</button>
+                  </div>
+                  {activeDeckTab && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '200px', overflowY: 'auto' }}>
+                      {pitchSlides.map((slide) => (
+                        <div key={slide.id} className="slide-card-item">
+                          <div className="slide-card-title">{slide.title}</div>
+                          <input
+                            type="text"
+                            className="context-input"
+                            style={{ fontSize: '10.5px', marginTop: '2px', padding: '4px 6px' }}
+                            value={slide.detail}
+                            onChange={(e) => handleUpdateSlideDetail(slide.id, e.target.value)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Section 6: Bookmarked Insights */}
                 {savedInsights.length > 0 && (
                   <div className="context-section">
                     <div className="context-section-header">
@@ -1095,7 +1249,6 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
                 <div className="context-hint">
                   <p>💡 <i>Any active Code, Terminal text, or Financial metrics entered here will be automatically extracted and bundled securely into your message when you hit the primary SEND button on the left!</i></p>
-                  <p style={{ marginTop: '6px' }}>💡 <i>Standard startup questions, pitch deck inquiries, or market queries should be typed directly into the chat box!</i></p>
                 </div>
               </div>
             </>
