@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import InteractiveWaves from './components/ui/interactive-waves.jsx';
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 const GEMINI_MODEL = 'gemini-3.6-flash';
@@ -612,6 +613,8 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           --btn-hover: #2563EB;
           --code-bg: #111622;
           --shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+          --wave-line-color: rgba(56, 189, 248, 0.2);
+          --wave-glow-color: rgba(37, 99, 235, 0.18);
         }
 
         /* ── Light Theme Liquid Glass Variables ── */
@@ -634,20 +637,47 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           --btn-hover: #1D4ED8;
           --code-bg: rgba(248, 250, 252, 0.9);
           --shadow: 0 30px 60px -12px rgba(15, 23, 42, 0.12), 0 18px 36px -18px rgba(0, 0, 0, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+          --wave-line-color: rgba(37, 99, 235, 0.16);
+          --wave-glow-color: rgba(14, 165, 233, 0.16);
         }
 
         html, body, #root, .app-root { height: 100%; overflow: hidden; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-dot); color: var(--text-primary); transition: all 0.3s ease; }
 
-        /* ── Grid & Dot Background with Floating Nodes ── */
+        /* ── Clean Liquid Glass Background with Floating Nodes ── */
         .grid-background {
           position: fixed; inset: 0; z-index: 0; pointer-events: none;
           background-color: var(--bg-dot);
-          background-image: 
-            radial-gradient(var(--dot-color) 1.5px, transparent 1.5px),
-            linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
-            linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
-          background-size: 24px 24px, 24px 24px, 24px 24px;
+        }
+
+        .grid-background::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 16% 18%, rgba(59, 130, 246, 0.18), transparent 26%),
+            radial-gradient(circle at 84% 24%, rgba(16, 185, 129, 0.13), transparent 24%),
+            radial-gradient(circle at 74% 82%, rgba(245, 158, 11, 0.12), transparent 26%),
+            linear-gradient(135deg, transparent 0%, var(--wave-glow-color) 46%, transparent 74%);
+        }
+
+        .waves-container {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          opacity: 0.95;
+          mix-blend-mode: screen;
+        }
+
+        .theme-light .waves-container {
+          opacity: 0.85;
+          mix-blend-mode: multiply;
+        }
+
+        .waves-container canvas {
+          width: 100%;
+          height: 100%;
+          display: block;
         }
 
         .floating-node {
@@ -966,6 +996,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
       {/* Floating Dot Grid & Nodes Background */}
       <div className="grid-background">
+        <InteractiveWaves />
         <div className="floating-node node-blue" />
         <div className="floating-node node-yellow" />
         <div className="floating-node node-green" />
