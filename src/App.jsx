@@ -619,16 +619,16 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           --bg-dot: #F1F5F9;
           --dot-color: rgba(71, 85, 105, 0.25);
           --grid-line-color: rgba(203, 213, 225, 0.5);
-          --card-bg: rgba(255, 255, 255, 0.75);
-          --card-border: rgba(255, 255, 255, 0.9);
-          --left-bg: rgba(255, 255, 255, 0.65);
-          --right-bg: rgba(248, 250, 252, 0.55);
-          --header-bg: rgba(241, 245, 249, 0.85);
+          --card-bg: rgba(255, 255, 255, 0.64);
+          --card-border: rgba(255, 255, 255, 0.95);
+          --left-bg: rgba(255, 255, 255, 0.58);
+          --right-bg: rgba(248, 250, 252, 0.48);
+          --header-bg: rgba(241, 245, 249, 0.72);
           --text-primary: #0F172A;
           --text-secondary: #475569;
           --text-muted: #94A3B8;
-          --input-bg: rgba(255, 255, 255, 0.85);
-          --input-border: rgba(203, 213, 225, 0.7);
+          --input-bg: rgba(255, 255, 255, 0.82);
+          --input-border: rgba(203, 213, 225, 0.75);
           --accent-blue: #2563EB;
           --accent-glow: rgba(37, 99, 235, 0.15);
           --btn-hover: #1D4ED8;
@@ -694,25 +694,25 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           width: 100%; max-width: 1100px; height: 88vh; max-height: 820px;
           background: var(--card-bg); border: 1px solid var(--card-border);
           border-radius: 24px; box-shadow: var(--shadow); display: flex; overflow: hidden;
-          backdrop-filter: blur(24px) saturate(180%);
-          -webkit-backdrop-filter: blur(24px) saturate(180%);
+          backdrop-filter: blur(14px) saturate(170%);
+          -webkit-backdrop-filter: blur(14px) saturate(170%);
         }
 
         .theme-light .main-container-card {
-          background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.55) 100%);
+          background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.48) 100%);
           border: 1.5px solid rgba(255, 255, 255, 0.95);
         }
 
         .theme-light .context-section {
-          background: rgba(255, 255, 255, 0.7);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
+          background: rgba(255, 255, 255, 0.62);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.9);
           box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
         }
 
         .theme-light .msg-row.assistant .msg-bubble {
-          background: rgba(255, 255, 255, 0.85);
+          background: rgba(255, 255, 255, 0.78);
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.95);
