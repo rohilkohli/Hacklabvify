@@ -710,11 +710,16 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
         .top-lang-select {
           position: absolute; top: 1.2rem; right: 1.5rem; z-index: 100;
-          padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card-border);
-          background: var(--card-bg); color: var(--text-primary); font-family: inherit; font-size: 0.85rem; font-weight: 500;
+          padding: 8px 30px 8px 14px; border-radius: 20px; border: 1px solid var(--card-border);
+          background-color: var(--card-bg); color: var(--text-primary); font-family: inherit; font-size: 0.85rem; font-weight: 600;
           cursor: pointer; box-shadow: var(--shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); outline: none; transition: all 0.2s ease;
+          appearance: none; -webkit-appearance: none; -moz-appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 10px center;
+          background-size: 12px;
         }
-        .top-lang-select:hover { border-color: var(--accent-blue); }
+        .top-lang-select:hover { border-color: var(--accent-blue); transform: translateY(-1px); }
 
         /* ── Centered Main Container Card & True Liquid Glass ── */
         .app-window-wrapper {
