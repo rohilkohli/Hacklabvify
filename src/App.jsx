@@ -154,6 +154,17 @@ function UpArrowIcon() {
   );
 }
 
+function MicIcon({ active }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill={active ? "#EF4444" : "none"} stroke={active ? "#EF4444" : "currentColor"} strokeWidth="2">
+      <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+      <path d="M19 10v2a7 7 0 01-14 0v-2" />
+      <line x1="12" y1="19" x2="12" y2="23" />
+      <line x1="8" y1="23" x2="16" y2="23" />
+    </svg>
+  );
+}
+
 function BotAvatar() {
   return (
     <div className="bot-avatar">
@@ -192,10 +203,16 @@ export default function App() {
   const [monthlyExpenses, setMonthlyExpenses] = useState(() => Number(localStorage.getItem('hv_expenses')) || 15000);
   const [monthlyRevenue, setMonthlyRevenue] = useState(() => Number(localStorage.getItem('hv_revenue')) || 4000);
 
-  // Chat Messages state
+  // Chat Messages & Insights state
   const [messages, setMessages] = useState(() => {
     try {
       const saved = localStorage.getItem('hv_messages');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+  const [savedInsights, setSavedInsights] = useState(() => {
+    try {
+      const saved = localStorage.getItem('hv_savedInsights');
       return saved ? JSON.parse(saved) : [];
     } catch { return []; }
   });
@@ -206,6 +223,7 @@ export default function App() {
   const [toastVisible, setToastVisible] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [tempApiKey, setTempApiKey] = useState(customApiKey);
+  const [isListening, setIsListening] = useState(false);
 
   const chatEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -219,6 +237,7 @@ export default function App() {
   useEffect(() => { localStorage.setItem('hv_stage', stage); }, [stage]);
   useEffect(() => { localStorage.setItem('hv_session', sessionActive); }, [sessionActive]);
   useEffect(() => { localStorage.setItem('hv_messages', JSON.stringify(messages)); }, [messages]);
+  useEffect(() => { localStorage.setItem('hv_savedInsights', JSON.stringify(savedInsights)); }, [savedInsights]);
   useEffect(() => { localStorage.setItem('hv_custom_api_key', customApiKey); }, [customApiKey]);
   useEffect(() => { localStorage.setItem('hv_persona', persona); }, [persona]);
   useEffect(() => { localStorage.setItem('hv_cash', cashBalance); }, [cashBalance]);
@@ -352,6 +371,22 @@ export default function App() {
     }
   };
 
+  const handleCopyMessage = (content) => {
+    navigator.clipboard.writeText(content);
+    showToast('Copied to clipboard');
+  };
+
+  const handleBookmarkMessage = (content) => {
+    const snippet = content.slice(0, 120) + (content.length > 120 ? '…' : '');
+    setSavedInsights((prev) => [{ id: Date.now(), snippet, full: content, ts: Date.now() }, ...prev]);
+    showToast('Insight bookmarked');
+  };
+
+  const handleDeleteBookmark = (id) => {
+    setSavedInsights((prev) => prev.filter((i) => i.id !== id));
+    showToast('Bookmark removed');
+  };
+
   const handleClearSession = () => {
     setMessages([{
       role: 'assistant',
@@ -382,8 +417,101 @@ export default function App() {
     reader.readAsText(file);
   };
 
+  const handleExportSession = (format = 'txt') => {
+    let text = '';
+    let mimeType = 'text/plain';
+    let ext = 'txt';
+
+    if (format === 'json') {
+      text = JSON.stringify({ startup: { name: startupName, stage }, persona, language, messages, savedInsights }, null, 2);
+      mimeType = 'application/json';
+      ext = 'json';
+    } else if (format === 'md') {
+      text = `# ${startupName || 'Startup'} - AI Co-Founder Strategy Session\n\n**Founder**: ${username} | **Stage**: ${stage} | **Persona**: ${activePersonaObj.name}\n\n` +
+        messages.map((m) => `### ${m.role.toUpperCase()}\n${m.content}`).join('\n\n---\n\n');
+      ext = 'md';
+    } else {
+      text = messages.map((m) => `[${m.role.toUpperCase()}]\n${m.content}`).join('\n\n---\n\n');
+    }
+
+    const blob = new Blob([text], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(startupName || 'hacklabvify').replace(/\s+/g, '-')}-copilot.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`Exported as .${ext}`);
+  };
+
+  // Voice Input Speech Recognition
+  const toggleVoiceInput = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showToast('Speech recognition not supported in browser');
+      return;
+    }
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'en-US';
+      recognition.onstart = () => { setIsListening(true); showToast('Listening... Speak now'); };
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        setIsListening(false);
+      };
+      recognition.onerror = () => { setIsListening(false); showToast('Voice error'); };
+      recognition.onend = () => setIsListening(false);
+      recognition.start();
+    } catch {
+      setIsListening(false);
+    }
+  };
+
+  // Load sample code helper
+  const handleLoadSampleCode = () => {
+    setCodeFilename('App.jsx');
+    setCodeContext(`// Sample React Component for ${startupName || 'DevPulse AI'}
+import React, { useState } from 'react';
+
+export default function PRScanner() {
+  const [prUrl, setPrUrl] = useState('');
+  return (
+    <div className="p-4 bg-slate-900 text-white rounded-lg">
+      <h2 className="text-xl font-bold">Automated PR Security Scanner</h2>
+      <input value={prUrl} onChange={(e) => setPrUrl(e.target.value)} placeholder="https://github.com/org/repo/pull/1" className="p-2 border rounded text-black" />
+    </div>
+  );
+}`);
+    showToast('Loaded sample code buffer');
+  };
+
+  // Load sample error traceback helper
+  const handleLoadSampleError = () => {
+    setTerminalErrors(`Error [Vite]: Internal server error in src/App.jsx:12:45
+Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
+  10 |   const [state, setState] = useState(null);
+  11 |   
+> 12 |   export default function MainApp() {
+     |   ^^^^^^
+  13 |     return <div>Header</div>
+  14 |   }`);
+    showToast('Loaded sample terminal traceback');
+  };
+
+  // Financial calculations
   const netBurn = Math.max(0, monthlyExpenses - monthlyRevenue);
   const runwayMonths = netBurn > 0 ? (cashBalance / netBurn).toFixed(1) : '∞';
+
+  const handleAskFinancialOptimization = () => {
+    const prompt = `Analyze financial runway for ${startupName || 'our startup'}. Cash: $${cashBalance.toLocaleString()}, Expenses: $${monthlyExpenses.toLocaleString()}/mo, Revenue: $${monthlyRevenue.toLocaleString()}/mo. Net Burn: $${netBurn.toLocaleString()}/mo, Runway: ${runwayMonths} months. Provide ## Runway Analysis, ## Top 3 Cost Reduction Strategies, ## Revenue Acceleration Tactics, and ## ⚡ Your Next 3 Actions.`;
+    callGemini(prompt);
+  };
 
   return (
     <div className={`app-root theme-${theme}`}>
@@ -395,7 +523,7 @@ export default function App() {
         /* ── Dark Theme Variables ── */
         .theme-dark {
           --bg-dot: #121824;
-          --dot-color: rgba(255, 255, 255, 0.12);
+          --dot-color: rgba(255, 255, 255, 0.08);
           --grid-line-color: rgba(255, 255, 255, 0.04);
           --card-bg: #1A212D;
           --card-border: #283344;
@@ -579,6 +707,13 @@ export default function App() {
         .msg-bubble .md-paragraph { margin-bottom: 4px; }
         .msg-bubble .md-list { margin: 4px 0 6px 14px; list-style: disc; }
 
+        .msg-actions { display: flex; gap: 4px; margin-top: 4px; }
+        .msg-action-btn {
+          background: transparent; border: 1px solid var(--card-border); color: var(--text-muted);
+          border-radius: 4px; padding: 2px 6px; font-size: 9.5px; cursor: pointer; transition: all 0.2s ease;
+        }
+        .msg-action-btn:hover { color: #3B82F6; border-color: #3B82F6; }
+
         /* ── Suggestions Bar ── */
         .suggestions-container { padding: 8px 20px; display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0; }
         .suggestions-container::-webkit-scrollbar { height: 2px; }
@@ -618,7 +753,13 @@ export default function App() {
         /* ── Right Column IDE Context Panel ── */
         .context-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: #3B82F6; margin-bottom: 2px; }
 
-        .context-section h4 { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+        .context-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+        .context-section-header h4 { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+
+        .mini-link-btn {
+          background: transparent; border: none; color: #3B82F6; font-size: 10px; cursor: pointer; font-weight: 500;
+        }
+        .mini-link-btn:hover { text-decoration: underline; }
 
         .context-input, .context-textarea {
           width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
@@ -628,12 +769,29 @@ export default function App() {
         .context-input:focus, .context-textarea:focus { border-color: var(--accent-blue); }
 
         .context-textarea { font-family: 'JetBrains Mono', monospace; font-size: 11px; resize: vertical; min-height: 60px; }
-        .context-textarea.large { min-height: 110px; }
+        .context-textarea.large { min-height: 100px; }
 
         .context-hint { font-size: 10.5px; color: var(--text-muted); line-height: 1.5; font-style: italic; }
 
+        .persona-chip-group { display: flex; gap: 6px; }
+        .persona-chip {
+          flex: 1; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px;
+          padding: 6px; font-size: 10.5px; font-weight: 600; color: var(--text-secondary); text-align: center;
+          cursor: pointer; transition: all 0.2s ease;
+        }
+        .persona-chip.active { border-color: #3B82F6; color: #3B82F6; background: var(--accent-glow); }
+
+        .modal-overlay {
+          position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.65);
+          backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content {
+          background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px;
+          width: 100%; max-width: 440px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow);
+        }
+
         .toast {
-          position: fixed; bottom: 20px; right: 20px; z-index: 200; background: var(--card-bg);
+          position: fixed; bottom: 20px; right: 20px; z-index: 300; background: var(--card-bg);
           border: 1px solid var(--card-border); color: var(--text-primary); padding: 8px 14px;
           border-radius: 8px; font-size: 12px; font-weight: 500; opacity: 0; transform: translateY(10px); transition: all 0.25s ease;
         }
@@ -660,6 +818,26 @@ export default function App() {
       </select>
 
       <Toast message={toastMsg} visible={toastVisible} />
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="modal-overlay" onClick={() => setShowSettingsModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div style={{ fontFamily: 'Space Grotesk', fontSize: '16px', fontWeight: 700 }}>🔑 Gemini API Key Settings</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              Enter a custom Google Gemini API Key if you wish to override default key configuration. Stored locally in your browser.
+            </div>
+            <div className="login-form-group">
+              <label style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>API Key</label>
+              <input type="password" className="input-login" placeholder="AIzaSy..." value={tempApiKey} onChange={(e) => setTempApiKey(e.target.value)} />
+            </div>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button className="text-btn" onClick={() => { setCustomApiKey(''); setTempApiKey(''); setShowSettingsModal(false); showToast('Key cleared'); }}>Clear Key</button>
+              <button className="glow-start-btn" style={{ width: 'auto', padding: '6px 16px' }} onClick={() => { setCustomApiKey(tempApiKey.trim()); setShowSettingsModal(false); showToast(tempApiKey.trim() ? 'Key saved' : 'Using default'); }}>Save Settings</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Centered Main Container Card */}
       <div className="app-window-wrapper">
@@ -736,8 +914,16 @@ export default function App() {
                   {messages.map((msg, idx) => (
                     <div key={idx} className={`msg-row ${msg.role}`}>
                       {msg.role === 'assistant' && <BotAvatar />}
-                      <div className="msg-bubble">
-                        {msg.role === 'assistant' ? parseMarkdown(msg.content) : msg.content}
+                      <div>
+                        <div className="msg-bubble">
+                          {msg.role === 'assistant' ? parseMarkdown(msg.content) : msg.content}
+                        </div>
+                        {msg.role === 'assistant' && (
+                          <div className="msg-actions">
+                            <button className="msg-action-btn" onClick={() => handleCopyMessage(msg.content)}>Copy</button>
+                            <button className="msg-action-btn" onClick={() => handleBookmarkMessage(msg.content)}>Bookmark</button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -770,6 +956,10 @@ export default function App() {
                     </label>
                     <input type="file" id="file-upload" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} accept="image/*,.txt,.js,.py,.json,.md" />
 
+                    <button className="action-btn" onClick={toggleVoiceInput} title="Voice dictation">
+                      <MicIcon active={isListening} />
+                    </button>
+
                     <textarea
                       ref={textareaRef}
                       className="chat-input-textarea"
@@ -797,10 +987,38 @@ export default function App() {
 
               {/* Right Column: IDE & Co-Founder Context Tooling */}
               <div className="context-tools-col">
-                <h3 className="context-title">IDE Context Tooling</h3>
+                <div style={{ display: 'flex', alignItems: 'center', justifySelf: 'space-between', justifyContent: 'space-between' }}>
+                  <h3 className="context-title">IDE Context Tooling</h3>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <button className="mini-link-btn" onClick={() => handleExportSession('txt')}>TXT</button>
+                    <button className="mini-link-btn" onClick={() => handleExportSession('md')}>MD</button>
+                    <button className="mini-link-btn" onClick={() => handleExportSession('json')}>JSON</button>
+                  </div>
+                </div>
 
+                {/* Section 0: AI Persona Switcher */}
+                <div>
+                  <div className="context-section-header">
+                    <h4>Advisor Tone</h4>
+                  </div>
+                  <div className="persona-chip-group">
+                    {ADVISOR_PERSONAS.map((p) => (
+                      <div key={p.id} className={`persona-chip ${persona === p.id ? 'active' : ''}`} onClick={() => { setPersona(p.id); showToast(`Tone: ${p.name}`); }}>
+                        {p.icon} {p.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section 1: Code & Architecture Context Buffer */}
                 <div className="context-section">
-                  <h4>Paste Code & Architecture Context</h4>
+                  <div className="context-section-header">
+                    <h4>Paste Code & Architecture Context</h4>
+                    <div>
+                      <button className="mini-link-btn" onClick={handleLoadSampleCode}>Sample</button>
+                      {codeContext && <button className="mini-link-btn" style={{ marginLeft: '6px', color: '#EF4444' }} onClick={() => setCodeContext('')}>Clear</button>}
+                    </div>
+                  </div>
                   <input
                     type="text"
                     className="context-input"
@@ -810,15 +1028,22 @@ export default function App() {
                   />
                   <textarea
                     className="context-textarea large"
-                    style={{ marginTop: '8px' }}
+                    style={{ marginTop: '6px' }}
                     placeholder="Paste your raw code buffer or architecture spec here..."
                     value={codeContext}
                     onChange={(e) => setCodeContext(e.target.value)}
                   />
                 </div>
 
+                {/* Section 2: Terminal & Build Tracebacks */}
                 <div className="context-section">
-                  <h4>Terminal & Build Tracebacks</h4>
+                  <div className="context-section-header">
+                    <h4>Terminal & Build Tracebacks</h4>
+                    <div>
+                      <button className="mini-link-btn" onClick={handleLoadSampleError}>Sample</button>
+                      {terminalErrors && <button className="mini-link-btn" style={{ marginLeft: '6px', color: '#EF4444' }} onClick={() => setTerminalErrors('')}>Clear</button>}
+                    </div>
+                  </div>
                   <textarea
                     className="context-textarea"
                     placeholder="Paste command line tracebacks, API errors, or build logs here..."
@@ -827,9 +1052,13 @@ export default function App() {
                   />
                 </div>
 
+                {/* Section 3: Financial Runway & Unit Economics */}
                 <div className="context-section">
-                  <h4>Financial Runway & Unit Economics</h4>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  <div className="context-section-header">
+                    <h4>Financial Runway & Unit Economics</h4>
+                    <button className="mini-link-btn" onClick={handleAskFinancialOptimization}>⚡ AI Optimize</button>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                     <div>
                       <label style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Cash ($)</label>
                       <input type="number" className="context-input" value={cashBalance} onChange={(e) => setCashBalance(Number(e.target.value))} />
@@ -844,9 +1073,29 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* Section 4: Bookmarked Insights */}
+                {savedInsights.length > 0 && (
+                  <div className="context-section">
+                    <div className="context-section-header">
+                      <h4>Bookmarked Insights ({savedInsights.length})</h4>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      {savedInsights.map((item) => (
+                        <div key={item.id} style={{ background: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: '6px', padding: '6px 8px' }}>
+                          <div style={{ fontSize: '11px', color: 'var(--text-primary)', lineHeight: 1.4 }}>{item.snippet}</div>
+                          <div style={{ display: 'flex', gap: '6px', marginTop: '4px', justifyContent: 'flex-end' }}>
+                            <button className="mini-link-btn" onClick={() => handleCopyMessage(item.full)}>Copy</button>
+                            <button className="mini-link-btn" style={{ color: '#EF4444' }} onClick={() => handleDeleteBookmark(item.id)}>Remove</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="context-hint">
                   <p>💡 <i>Any active Code, Terminal text, or Financial metrics entered here will be automatically extracted and bundled securely into your message when you hit the primary SEND button on the left!</i></p>
-                  <p style={{ marginTop: '8px' }}>💡 <i>Standard startup questions, pitch deck inquiries, or market queries should be typed directly into the chat box!</i></p>
+                  <p style={{ marginTop: '6px' }}>💡 <i>Standard startup questions, pitch deck inquiries, or market queries should be typed directly into the chat box!</i></p>
                 </div>
               </div>
             </>
