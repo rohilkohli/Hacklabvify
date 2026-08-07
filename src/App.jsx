@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import InteractiveWaves from './components/ui/interactive-waves.jsx';
+import { BorderBeam } from './components/ui/border-beam.jsx';
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 const GEMINI_MODEL = 'gemini-3.6-flash';
@@ -1064,23 +1065,27 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
               </div>
 
               <form onSubmit={handleStartMission} className="login-form-group">
-                <input
-                  type="text"
-                  className="input-login"
-                  placeholder="What's your founder name?"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
+                <BorderBeam borderRadius="12px" duration={8} colorFrom="#3B82F6" colorTo="#10B981">
+                  <input
+                    type="text"
+                    className="input-login"
+                    placeholder="What's your founder name?"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                </BorderBeam>
 
-                <input
-                  type="text"
-                  className="input-login"
-                  placeholder="What's your startup name? (e.g., Acme AI)"
-                  value={startupName}
-                  onChange={(e) => setStartupName(e.target.value)}
-                  required
-                />
+                <BorderBeam borderRadius="12px" duration={8} colorFrom="#8B5CF6" colorTo="#EC4899">
+                  <input
+                    type="text"
+                    className="input-login"
+                    placeholder="What's your startup name? (e.g., Acme AI)"
+                    value={startupName}
+                    onChange={(e) => setStartupName(e.target.value)}
+                    required
+                  />
+                </BorderBeam>
 
                 <select
                   className="input-login"
@@ -1188,31 +1193,33 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
                 {/* Input Footer Pill */}
                 <footer className="chat-footer">
-                  <div className="input-pill">
-                    <label htmlFor="file-upload" className="action-btn" title="Add file context">
-                      <PlusIcon />
-                    </label>
-                    <input type="file" id="file-upload" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} accept="image/*,.txt,.js,.py,.json,.md" />
+                  <BorderBeam borderRadius="28px" duration={6} colorFrom="#3B82F6" colorTo="#10B981">
+                    <div className="input-pill">
+                      <label htmlFor="file-upload" className="action-btn" title="Add file context">
+                        <PlusIcon />
+                      </label>
+                      <input type="file" id="file-upload" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} accept="image/*,.txt,.js,.py,.json,.md" />
 
-                    <button className="action-btn" onClick={toggleVoiceInput} title="Voice dictation">
-                      <MicIcon active={isListening} />
-                    </button>
+                      <button className="action-btn" onClick={toggleVoiceInput} title="Voice dictation">
+                        <MicIcon active={isListening} />
+                      </button>
 
-                    <textarea
-                      ref={textareaRef}
-                      className="chat-input-textarea"
-                      rows={1}
-                      placeholder="Ask your AI co-founder anything (e.g., 'How do we lower CAC?')..."
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      disabled={loading}
-                    />
+                      <textarea
+                        ref={textareaRef}
+                        className="chat-input-textarea"
+                        rows={1}
+                        placeholder="Ask your AI co-founder anything (e.g., 'How do we lower CAC?')..."
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        disabled={loading}
+                      />
 
-                    <button className="send-btn-round" onClick={handleSend} disabled={!input.trim() || loading} title="Send Message">
-                      <UpArrowIcon />
-                    </button>
-                  </div>
+                      <button className="send-btn-round" onClick={handleSend} disabled={!input.trim() || loading} title="Send Message">
+                        <UpArrowIcon />
+                      </button>
+                    </div>
+                  </BorderBeam>
 
                   {attachedFile && (
                     <div style={{ marginTop: '6px', fontSize: '11px', color: '#3B82F6', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -1276,13 +1283,14 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                         value={codeFilename}
                         onChange={(e) => setCodeFilename(e.target.value)}
                       />
-                      <textarea
-                        className="context-textarea large"
-                        style={{ marginTop: '6px' }}
-                        placeholder="Paste code snippet to include in AI analysis..."
-                        value={codeContext}
-                        onChange={(e) => setCodeContext(e.target.value)}
-                      />
+                      <BorderBeam borderRadius="10px" duration={10} colorFrom="#3B82F6" colorTo="#F59E0B" style={{ marginTop: '6px' }}>
+                        <textarea
+                          className="context-textarea large"
+                          placeholder="Paste code snippet to include in AI analysis..."
+                          value={codeContext}
+                          onChange={(e) => setCodeContext(e.target.value)}
+                        />
+                      </BorderBeam>
                       <div className="quick-trigger-group">
                         <button className="btn-trigger-chip" onClick={handleRunCodeAudit}>🔍 Audit Code</button>
                         <button className="btn-trigger-chip" onClick={handleRunCodeRefactor}>⚡ Refactor Code</button>
@@ -1297,12 +1305,14 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                           {terminalErrors && <button className="mini-link-btn" style={{ marginLeft: '6px', color: '#EF4444' }} onClick={() => setTerminalErrors('')}>Clear</button>}
                         </div>
                       </div>
-                      <textarea
-                        className="context-textarea"
-                        placeholder="Paste CLI build errors or stack tracebacks..."
-                        value={terminalErrors}
-                        onChange={(e) => setTerminalErrors(e.target.value)}
-                      />
+                      <BorderBeam borderRadius="10px" duration={10} colorFrom="#EF4444" colorTo="#F59E0B">
+                        <textarea
+                          className="context-textarea"
+                          placeholder="Paste CLI build errors or stack tracebacks..."
+                          value={terminalErrors}
+                          onChange={(e) => setTerminalErrors(e.target.value)}
+                        />
+                      </BorderBeam>
                       <div className="quick-trigger-group">
                         <button className="btn-trigger-chip" onClick={handleRunErrorDiagnosis}>🛠️ Auto-Fix Terminal Error</button>
                       </div>
