@@ -383,6 +383,16 @@ export default function App() {
     showToast(`Loaded ${preset.name}`);
   };
 
+  const handleLaunchWithPrompt = (initialPrompt) => {
+    const chosenUser = username.trim() || 'Rohil Kohli';
+    const chosenStartup = startupName.trim() || 'DevPulse AI';
+    setUsername(chosenUser);
+    setStartupName(chosenStartup);
+    setSessionActive(true);
+    callGemini(initialPrompt);
+    showToast('Session launched!');
+  };
+
   const handleSend = () => {
     if (!input.trim() || loading) return;
     callGemini(input);
@@ -702,6 +712,10 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 16px;
           padding: 10px 16px; font-size: 12.5px; color: var(--text-secondary); text-align: left;
         }
+        .tip-btn {
+          width: 100%; cursor: pointer; transition: all 0.2s ease; font-family: inherit;
+        }
+        .tip-btn:hover { border-color: #3B82F6; background: var(--accent-glow); color: var(--text-primary); transform: translateY(-1px); }
 
         .login-form-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 480px; }
 
@@ -967,10 +981,18 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
               </div>
 
               <div className="login-tips">
-                <div className="tip-item">🔍 <strong>Market Research</strong>: TAM/SAM/SOM breakdown & customer segments</div>
-                <div className="tip-item">🏆 <strong>Competitor Analysis</strong>: Top 5 competitors & competitive moat definition</div>
-                <div className="tip-item">💰 <strong>Pitch Deck Outline</strong>: 10-slide deck architecture & investor narrative</div>
-                <div className="tip-item">📊 <strong>Runway Calculator</strong>: Burn rate analysis & financial runway optimization</div>
+                <button type="button" className="tip-item tip-btn" onClick={() => handleLaunchWithPrompt('Give me a comprehensive Market Research overview (TAM/SAM/SOM, trends, target customer segments).')}>
+                  🔍 <strong>Market Research</strong>: TAM/SAM/SOM breakdown & customer segments
+                </button>
+                <button type="button" className="tip-item tip-btn" onClick={() => handleLaunchWithPrompt('Analyze the top 5 competitors, key differentiators, and our competitive moat.')}>
+                  🏆 <strong>Competitor Analysis</strong>: Top 5 competitors & competitive moat definition
+                </button>
+                <button type="button" className="tip-item tip-btn" onClick={() => handleLaunchWithPrompt('Create a complete 10-slide pitch deck outline with slide titles and key bullet points.')}>
+                  💰 <strong>Pitch Deck Outline</strong>: 10-slide deck architecture & investor narrative
+                </button>
+                <button type="button" className="tip-item tip-btn" onClick={() => handleLaunchWithPrompt('Analyze our unit economics, CAC/LTV, burn rate, and runway optimization strategies.')}>
+                  📊 <strong>Runway Calculator</strong>: Burn rate analysis & financial runway optimization
+                </button>
               </div>
 
               <form onSubmit={handleStartMission} className="login-form-group">
