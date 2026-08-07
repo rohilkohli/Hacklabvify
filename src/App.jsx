@@ -6,6 +6,51 @@ const getGeminiUrl = (apiKey) => `https://generativelanguage.googleapis.com/v1be
 
 const STAGE_OPTIONS = ['Idea', 'MVP', 'Beta', 'Revenue', 'Scaling'];
 
+const PRESET_STARTUPS = [
+  {
+    name: 'DevPulse AI',
+    industry: 'DevTools & AI',
+    stage: 'MVP',
+    tagline: 'Automated PR code reviews and security audits'
+  },
+  {
+    name: 'MediMind',
+    industry: 'HealthTech & AI',
+    stage: 'Idea',
+    tagline: 'AI clinical triage assistant for rural health clinics'
+  },
+  {
+    name: 'PayFlow Global',
+    industry: 'FinTech',
+    stage: 'Revenue',
+    tagline: 'Cross-border B2B payouts for remote engineering teams'
+  }
+];
+
+const ADVISOR_PERSONAS = [
+  {
+    id: 'yc_partner',
+    name: 'YC Partner',
+    icon: '⚡',
+    desc: 'Direct, speed & growth metrics focus',
+    modifier: 'Adopt the tone of an experienced Y Combinator partner. Be direct, aggressive on metrics, zero fluff, and hyper-focused on speed and customer validation.'
+  },
+  {
+    id: 'risk_expert',
+    name: 'Risk & Legal Expert',
+    icon: '🛡️',
+    desc: 'Compliance, security & IP focus',
+    modifier: 'Adopt the tone of a seasoned risk officer and legal compliance expert. Focus heavily on regulatory hurdles, IP protection, security risks, and contractual safeguards.'
+  },
+  {
+    id: 'growth_guru',
+    name: 'Growth Lead',
+    icon: '🚀',
+    desc: 'Virality, CAC/LTV & funnel conversion',
+    modifier: 'Adopt the tone of a hyper-focused Growth Lead. Focus on viral marketing loops, CAC reduction, LTV optimization, landing page conversion, and product-led growth strategies.'
+  }
+];
+
 const QUICK_ACTIONS = [
   { icon: '🔍', label: 'Market Research', key: 'market', color: '#3B6FFF' },
   { icon: '🏆', label: 'Competitor Analysis', key: 'competitor', color: '#00D4AA' },
@@ -131,16 +176,26 @@ function ExportIcon() {
   );
 }
 
-function SendIcon() {
+function SettingsIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-      <line x1="22" y1="2" x2="11" y2="13" />
-      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
     </svg>
   );
 }
 
-// ── Toast Notification ───────────────────────────────────────────
+function MicIcon({ active }) {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill={active ? "#FF4D6D" : "none"} stroke={active ? "#FF4D6D" : "currentColor"} strokeWidth="2">
+      <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+      <path d="M19 10v2a7 7 0 01-14 0v-2" />
+      <line x1="12" y1="19" x2="12" y2="23" />
+      <line x1="8" y1="23" x2="16" y2="23" />
+    </svg>
+  );
+}
+
 function Toast({ message, visible }) {
   return (
     <div className={`toast ${visible ? 'toast-visible' : ''}`}>
@@ -151,25 +206,64 @@ function Toast({ message, visible }) {
 
 // ── Main App ─────────────────────────────────────────────────────
 export default function App() {
-  const [startupName, setStartupName] = useState('');
-  const [industry, setIndustry] = useState('');
-  const [stage, setStage] = useState('Idea');
-  const [tagline, setTagline] = useState('');
-  const [messages, setMessages] = useState([]);
+  // LocalStorage state initialization
+  const [startupName, setStartupName] = useState(() => localStorage.getItem('hv_startupName') || '');
+  const [industry, setIndustry] = useState(() => localStorage.getItem('hv_industry') || '');
+  const [stage, setStage] = useState(() => localStorage.getItem('hv_stage') || 'Idea');
+  const [tagline, setTagline] = useState(() => localStorage.getItem('hv_tagline') || '');
+  const [contextSet, setContextSet] = useState(() => localStorage.getItem('hv_contextSet') === 'true');
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem('hv_messages');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+  const [savedInsights, setSavedInsights] = useState(() => {
+    try {
+      const saved = localStorage.getItem('hv_savedInsights');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+  const [customApiKey, setCustomApiKey] = useState(() => localStorage.getItem('hv_custom_api_key') || '');
+  const [persona, setPersona] = useState(() => localStorage.getItem('hv_persona') || 'yc_partner');
+  
+  // Finance Runway state
+  const [cashBalance, setCashBalance] = useState(() => Number(localStorage.getItem('hv_cash')) || 120000);
+  const [monthlyExpenses, setMonthlyExpenses] = useState(() => Number(localStorage.getItem('hv_expenses')) || 15000);
+  const [monthlyRevenue, setMonthlyRevenue] = useState(() => Number(localStorage.getItem('hv_revenue')) || 4000);
+
+  // UI state
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [contextSet, setContextSet] = useState(false);
-  const [activeTab, setActiveTab] = useState('chat');
-  const [savedInsights, setSavedInsights] = useState([]);
+  const [activeTab, setActiveTab] = useState('context');
   const [toastMsg, setToastMsg] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [msgCount, setMsgCount] = useState(0);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [tempApiKey, setTempApiKey] = useState(customApiKey);
+  const [isListening, setIsListening] = useState(false);
 
   const chatEndRef = useRef(null);
   const textareaRef = useRef(null);
 
-  const systemContext = `You are an expert startup co-founder, strategist, and advisor. The user is building a startup called "${startupName}" in the ${industry} space, currently at the ${stage} stage${tagline ? `, with the tagline: "${tagline}"` : ''}. Give sharp, actionable, founder-level advice — never generic. Format responses using: **bold** for emphasis, ## for section headings, and bullet points starting with - for lists. Always end with a section ## ⚡ Your Next 3 Actions listing exactly 3 immediate steps the founder can take this week. Keep responses under 350 words and always complete every section fully — never cut off mid-response.`;
+  // Sync state to LocalStorage
+  useEffect(() => { localStorage.setItem('hv_startupName', startupName); }, [startupName]);
+  useEffect(() => { localStorage.setItem('hv_industry', industry); }, [industry]);
+  useEffect(() => { localStorage.setItem('hv_stage', stage); }, [stage]);
+  useEffect(() => { localStorage.setItem('hv_tagline', tagline); }, [tagline]);
+  useEffect(() => { localStorage.setItem('hv_contextSet', contextSet); }, [contextSet]);
+  useEffect(() => { localStorage.setItem('hv_messages', JSON.stringify(messages)); }, [messages]);
+  useEffect(() => { localStorage.setItem('hv_savedInsights', JSON.stringify(savedInsights)); }, [savedInsights]);
+  useEffect(() => { localStorage.setItem('hv_custom_api_key', customApiKey); }, [customApiKey]);
+  useEffect(() => { localStorage.setItem('hv_persona', persona); }, [persona]);
+  useEffect(() => { localStorage.setItem('hv_cash', cashBalance); }, [cashBalance]);
+  useEffect(() => { localStorage.setItem('hv_expenses', monthlyExpenses); }, [monthlyExpenses]);
+  useEffect(() => { localStorage.setItem('hv_revenue', monthlyRevenue); }, [monthlyRevenue]);
+
+  const activePersonaObj = ADVISOR_PERSONAS.find((p) => p.id === persona) || ADVISOR_PERSONAS[0];
+
+  const systemContext = `You are an expert startup co-founder, strategist, and advisor. ${activePersonaObj.modifier} The user is building a startup called "${startupName}" in the ${industry} space, currently at the ${stage} stage${tagline ? `, with the tagline: "${tagline}"` : ''}. Give sharp, actionable, founder-level advice — never generic. Format responses using: **bold** for emphasis, ## for section headings, and bullet points starting with - for lists. Always end with a section ## ⚡ Your Next 3 Actions listing exactly 3 immediate steps the founder can take this week. Keep responses under 350 words and always complete every section fully — never cut off mid-response.`;
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -202,7 +296,9 @@ export default function App() {
         parts: [{ text: m.content }],
       }));
 
-      const res = await fetch(getGeminiUrl(GEMINI_API_KEY), {
+      const activeKey = customApiKey.trim() || GEMINI_API_KEY;
+
+      const res = await fetch(getGeminiUrl(activeKey), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -226,27 +322,43 @@ export default function App() {
       setMessages(finalMessages);
       setMsgCount((c) => c + 1);
     } catch {
-      setMessages([...messages, { role: 'assistant', content: '⚠️ Connection error. Check your API key and try again.', ts: Date.now() }]);
+      setMessages([...messages, { role: 'assistant', content: '⚠️ Connection error. Check your API key or internet connection.', ts: Date.now() }]);
     } finally {
       setLoading(false);
       setTimeout(() => textareaRef.current?.focus(), 100);
     }
-  }, [messages, loading, systemContext]);
+  }, [messages, loading, systemContext, customApiKey]);
 
   const handleStartSession = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!startupName.trim() || !industry.trim()) return;
+    setContextSet(true);
+    if (messages.length === 0) {
+      setMessages([{
+        role: 'assistant',
+        content: `Hey! I'm your AI co-founder for **${startupName.trim()}** (${activePersonaObj.name} Mode). I know your space — **${industry.trim()}** at the **${stage}** stage${tagline ? ` with the vision: "${tagline}"` : ''}. Ask me anything or select a Quick Action to get started. Let's build. ⚡`,
+        ts: Date.now(),
+      }]);
+    }
+  };
+
+  const handleApplyPreset = (preset) => {
+    setStartupName(preset.name);
+    setIndustry(preset.industry);
+    setStage(preset.stage);
+    setTagline(preset.tagline);
     setContextSet(true);
     setMessages([{
       role: 'assistant',
-      content: `Hey! I'm your AI co-founder for **${startupName.trim()}**. I know your space — **${industry.trim()}** at the **${stage}** stage${tagline ? ` with the vision: "${tagline}"` : ''}. Ask me anything or use a Quick Action to get started. Let's build. ⚡`,
+      content: `Loaded **${preset.name}** preset! Stage: **${preset.stage}** in **${preset.industry}**. Tagline: "${preset.tagline}". Choose an Action Playbook below or ask any question to begin. 🚀`,
       ts: Date.now(),
     }]);
+    showToast(`Loaded ${preset.name} preset`);
   };
 
   const getQuickActionPrompt = (key) => {
-    const n = startupName.trim();
-    const ind = industry.trim();
+    const n = startupName.trim() || 'our startup';
+    const ind = industry.trim() || 'our market';
     const prompts = {
       market: `Give me a comprehensive market research overview for ${n}. Include ## Market Size (TAM/SAM/SOM), ## Key Trends, ## Target Customer Segments, and ## Top 3 Opportunities.`,
       competitor: `Analyze the competitive landscape for ${n} in ${ind}. List ## Top 5 Competitors with their strengths and weaknesses, then ## Our Key Differentiators and competitive moat.`,
@@ -261,8 +373,7 @@ export default function App() {
   };
 
   const handleQuickAction = (key) => {
-    if (loading) return;
-    setActiveTab('chat');
+    if (loading || !contextSet) return;
     callGemini(getQuickActionPrompt(key));
   };
 
@@ -294,25 +405,119 @@ export default function App() {
     showToast('Insight removed');
   };
 
-  const handleClearChat = () => {
-    setMessages([{
-      role: 'assistant',
-      content: `Chat cleared. Still here for **${startupName}** — what do you want to tackle next? ⚡`,
-      ts: Date.now(),
-    }]);
-    setMsgCount(0);
+  const handleResetSession = () => {
+    if (window.confirm('Reset all startup context and chat history?')) {
+      setStartupName('');
+      setIndustry('');
+      setStage('Idea');
+      setTagline('');
+      setContextSet(false);
+      setMessages([]);
+      setSavedInsights([]);
+      localStorage.removeItem('hv_startupName');
+      localStorage.removeItem('hv_industry');
+      localStorage.removeItem('hv_stage');
+      localStorage.removeItem('hv_tagline');
+      localStorage.removeItem('hv_contextSet');
+      localStorage.removeItem('hv_messages');
+      localStorage.removeItem('hv_savedInsights');
+      showToast('Session reset');
+    }
   };
 
-  const handleExportChat = () => {
-    const text = messages.map((m) => `[${m.role.toUpperCase()}]\n${m.content}`).join('\n\n---\n\n');
-    const blob = new Blob([text], { type: 'text/plain' });
+  const handleExportChat = (format = 'txt') => {
+    let text = '';
+    let mimeType = 'text/plain';
+    let ext = 'txt';
+
+    if (format === 'json') {
+      text = JSON.stringify({ startup: { name: startupName, industry, stage, tagline }, persona, messages, savedInsights }, null, 2);
+      mimeType = 'application/json';
+      ext = 'json';
+    } else if (format === 'md') {
+      text = `# ${startupName || 'Startup'} - AI Co-Founder Strategy Session\n\n**Industry**: ${industry} | **Stage**: ${stage} | **Persona**: ${activePersonaObj.name}\n\n` +
+        messages.map((m) => `### ${m.role.toUpperCase()}\n${m.content}`).join('\n\n---\n\n');
+      ext = 'md';
+    } else {
+      text = messages.map((m) => `[${m.role.toUpperCase()}]\n${m.content}`).join('\n\n---\n\n');
+    }
+
+    const blob = new Blob([text], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${startupName.replace(/\s+/g, '-')}-copilot-session.txt`;
+    a.download = `${(startupName || 'hacklabvify').replace(/\s+/g, '-')}-copilot-session.${ext}`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('Chat exported');
+    showToast(`Exported as .${ext}`);
+  };
+
+  // Voice Input Handler
+  const toggleVoiceInput = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showToast('Speech recognition not supported in this browser');
+      return;
+    }
+
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        showToast('Listening... Speak now');
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        setIsListening(false);
+      };
+
+      recognition.onerror = () => {
+        setIsListening(false);
+        showToast('Voice input error');
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognition.start();
+    } catch {
+      setIsListening(false);
+      showToast('Could not start voice recognition');
+    }
+  };
+
+  // Financial calculations
+  const netBurn = Math.max(0, monthlyExpenses - monthlyRevenue);
+  const runwayMonths = netBurn > 0 ? (cashBalance / netBurn).toFixed(1) : '∞';
+
+  const getFinancialHealthBadge = () => {
+    if (netBurn === 0) return { label: '🟢 Net Profitable', color: '#22C55E' };
+    const months = Number(runwayMonths);
+    if (months >= 12) return { label: `🟢 Healthy (${months} Mo)`, color: '#22C55E' };
+    if (months >= 6) return { label: `🟡 Moderate (${months} Mo)`, color: '#F59E0B' };
+    return { label: `🔴 Critical (${months} Mo)`, color: '#FF4D6D' };
+  };
+
+  const handleAskFinancialOptimization = () => {
+    if (!contextSet) {
+      showToast('Please set startup context first');
+      return;
+    }
+    const health = getFinancialHealthBadge();
+    const prompt = `Analyze our financial runway for ${startupName || 'our startup'}. Cash in Bank: $${cashBalance.toLocaleString()}, Monthly Expenses: $${monthlyExpenses.toLocaleString()}, Monthly Revenue: $${monthlyRevenue.toLocaleString()}. Current Net Burn: $${netBurn.toLocaleString()}/month, Runway: ${runwayMonths} months (${health.label}). Provide ## Cash Runway Analysis, ## Top 3 Cost Reduction Strategies, ## Revenue Acceleration Opportunities, and ## ⚡ Your Next 3 Actions to extend runway.`;
+    callGemini(prompt);
   };
 
   const filteredMessages = searchQuery
@@ -357,7 +562,7 @@ export default function App() {
 
         /* ── Sidebar ── */
         .sidebar {
-          width: 268px; flex-shrink: 0;
+          width: 275px; flex-shrink: 0;
           background: var(--surface);
           border-right: 1px solid var(--border);
           display: flex; flex-direction: column;
@@ -365,15 +570,24 @@ export default function App() {
         }
 
         .sidebar-brand {
-          padding: 20px 18px 16px;
+          padding: 16px 18px 14px;
           border-bottom: 1px solid var(--border);
           flex-shrink: 0;
+          display: flex; align-items: center; justify-content: space-between;
         }
 
-        .brand-row { display: flex; align-items: center; gap: 9px; }
+        .brand-row { display: flex; align-items: center; gap: 8px; }
         .brand-icon { color: var(--accent); display: flex; align-items: center; }
-        .brand-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.3px; }
-        .brand-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; padding-left: 29px; }
+        .brand-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.3px; }
+        .brand-sub { font-size: 10px; color: var(--text-secondary); margin-top: 1px; }
+
+        .btn-settings {
+          background: var(--surface-2); border: 1px solid var(--border);
+          border-radius: 6px; color: var(--text-secondary);
+          padding: 6px; cursor: pointer; display: flex; align-items: center;
+          transition: all 0.2s ease;
+        }
+        .btn-settings:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-glow); }
 
         /* ── Sidebar Tabs ── */
         .sidebar-tabs {
@@ -383,14 +597,14 @@ export default function App() {
         }
 
         .sidebar-tab {
-          flex: 1; padding: 10px 4px;
-          font-size: 11px; font-weight: 600;
+          flex: 1; padding: 10px 2px;
+          font-size: 10px; font-weight: 600;
           letter-spacing: 0.04em; text-transform: uppercase;
           color: var(--text-muted);
           background: transparent; border: none;
           cursor: pointer; transition: all 0.2s ease;
           border-bottom: 2px solid transparent;
-          margin-bottom: -1px;
+          margin-bottom: -1px; text-align: center;
         }
 
         .sidebar-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
@@ -398,8 +612,8 @@ export default function App() {
 
         .sidebar-body {
           flex: 1; overflow-y: auto;
-          padding: 16px;
-          display: flex; flex-direction: column; gap: 16px;
+          padding: 14px;
+          display: flex; flex-direction: column; gap: 14px;
         }
 
         .sidebar-body::-webkit-scrollbar { width: 3px; }
@@ -408,11 +622,46 @@ export default function App() {
         .section-label {
           font-size: 10px; font-weight: 700;
           letter-spacing: 0.1em; text-transform: uppercase;
-          color: var(--text-muted); margin-bottom: 10px;
+          color: var(--text-muted); margin-bottom: 8px;
+          display: flex; align-items: center; justify-content: space-between;
+        }
+
+        /* ── Presets Chips ── */
+        .presets-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+        .preset-chip {
+          background: var(--surface-2); border: 1px solid var(--border);
+          border-radius: 6px; padding: 7px 9px; cursor: pointer;
+          text-align: left; transition: all 0.2s ease;
+        }
+        .preset-chip:hover { border-color: var(--accent); background: var(--accent-glow); }
+        .preset-name { font-size: 11px; font-weight: 600; color: var(--text-primary); }
+        .preset-desc { font-size: 9.5px; color: var(--text-muted); margin-top: 1px; }
+
+        /* ── Persona Cards ── */
+        .persona-selector { display: flex; flex-direction: column; gap: 6px; }
+        .persona-card {
+          display: flex; align-items: center; gap: 8px;
+          background: var(--surface-2); border: 1px solid var(--border);
+          border-radius: 8px; padding: 8px 10px; cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .persona-card.active { border-color: var(--accent); background: var(--accent-glow); }
+        .persona-icon { font-size: 16px; }
+        .persona-title { font-size: 11px; font-weight: 600; color: var(--text-primary); }
+        .persona-desc { font-size: 9.5px; color: var(--text-muted); }
+
+        /* ── Finance Widget ── */
+        .finance-card {
+          background: var(--surface-2); border: 1px solid var(--border);
+          border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .finance-status {
+          font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 4px;
+          display: inline-block; text-align: center; background: rgba(255,255,255,0.05);
         }
 
         /* ── Form ── */
-        .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
         .form-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); }
 
         .form-input, .form-select {
@@ -420,9 +669,9 @@ export default function App() {
           background: var(--surface-2);
           border: 1px solid var(--border);
           border-radius: 8px;
-          padding: 9px 11px;
+          padding: 8px 10px;
           font-family: 'Inter', sans-serif;
-          font-size: 13px; color: var(--text-primary);
+          font-size: 12.5px; color: var(--text-primary);
           outline: none; transition: all 0.2s ease;
         }
 
@@ -436,405 +685,238 @@ export default function App() {
           cursor: pointer; appearance: none;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A8BAD' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
           background-repeat: no-repeat;
-          background-position: right 11px center;
-          padding-right: 30px;
+          background-position: right 10px center;
+          padding-right: 28px;
         }
         .form-select option { background: var(--surface-2); }
-
-        .char-count { font-size: 10px; color: var(--text-muted); text-align: right; margin-top: 2px; }
 
         .btn-primary {
           width: 100%; background: var(--accent); color: #fff;
           border: none; border-radius: 8px;
-          padding: 10px 16px;
-          font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
-          cursor: pointer; transition: all 0.2s ease; margin-top: 2px;
+          padding: 9px 14px;
+          font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 600;
+          cursor: pointer; transition: all 0.2s ease;
           display: flex; align-items: center; justify-content: center; gap: 6px;
         }
+        .btn-primary:hover { background: #2b5ce6; transform: translateY(-1px); }
 
-        .btn-primary:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 0 20px var(--accent-glow); }
-        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-
-        /* ── Context Card ── */
-        .context-card {
-          background: var(--surface-2);
-          border: 1px solid var(--border);
-          border-radius: 10px; padding: 12px;
-        }
-
-        .context-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-        .context-name { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; }
-        .context-tagline { font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; font-style: italic; }
-
-        .btn-edit {
-          background: transparent; border: 1px solid var(--border);
-          border-radius: 5px; color: var(--text-secondary);
-          font-size: 10px; font-family: 'Inter', sans-serif;
-          padding: 3px 7px; cursor: pointer; transition: all 0.2s ease;
-        }
-        .btn-edit:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
-
-        .context-pills { display: flex; flex-wrap: wrap; gap: 5px; }
-        .pill {
-          font-size: 10px; font-family: 'JetBrains Mono', monospace;
-          padding: 2px 7px; border-radius: 5px;
-          background: var(--bg); border: 1px solid var(--border);
-          color: var(--text-secondary);
-        }
-        .pill.teal { color: var(--accent-2); border-color: rgba(0,212,170,0.3); background: rgba(0,212,170,0.08); }
-        .pill.blue { color: var(--accent); border-color: rgba(59,111,255,0.3); background: rgba(59,111,255,0.08); }
-
-        /* ── Session Stats ── */
-        .session-stats {
-          display: grid; grid-template-columns: 1fr 1fr;
-          gap: 6px; margin-top: 10px;
-        }
-        .stat-box {
-          background: var(--bg); border: 1px solid var(--border);
-          border-radius: 7px; padding: 8px 10px; text-align: center;
-        }
-        .stat-num { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 500; color: var(--accent); }
-        .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 1px; }
-
-        /* ── Quick Actions ── */
-        .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-
-        .btn-action {
-          display: flex; flex-direction: column; align-items: flex-start;
-          gap: 3px; background: var(--surface-2);
-          border: 1px solid var(--border); border-radius: 8px;
-          padding: 9px 10px; cursor: pointer;
-          text-align: left; transition: all 0.2s ease;
-        }
-        .btn-action:hover:not(:disabled) {
-          border-color: var(--accent);
-          background: var(--accent-glow);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .btn-action:disabled { opacity: 0.35; cursor: not-allowed; }
-        .btn-action-icon { font-size: 15px; line-height: 1; }
-        .btn-action-label { font-size: 10px; font-weight: 600; color: var(--text-secondary); line-height: 1.3; }
-
-        /* ── Saved Insights ── */
-        .insight-item {
+        .btn-secondary {
           background: var(--surface-2); border: 1px solid var(--border);
-          border-radius: 8px; padding: 10px 12px;
-          display: flex; flex-direction: column; gap: 6px;
+          color: var(--text-secondary); border-radius: 6px; padding: 6px 10px;
+          font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
         }
-        .insight-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
-        .insight-actions { display: flex; gap: 6px; justify-content: flex-end; }
-        .btn-icon {
-          background: transparent; border: 1px solid var(--border);
-          border-radius: 5px; color: var(--text-muted);
-          padding: 4px 7px; cursor: pointer; font-size: 11px;
-          display: flex; align-items: center; gap: 4px;
-          transition: all 0.2s ease; font-family: 'Inter', sans-serif;
-        }
-        .btn-icon:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
-        .btn-icon.danger:hover { border-color: var(--danger); color: var(--danger); background: rgba(255,77,109,0.1); }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
-        .empty-insights {
-          text-align: center; padding: 24px 12px;
-          font-size: 12px; color: var(--text-muted);
-        }
+        /* ── Main View ── */
+        .main-view { flex: 1; display: flex; flex-direction: column; background: var(--bg); position: relative; }
 
-        /* ── Sidebar Footer ── */
-        .sidebar-footer {
-          padding: 12px 16px;
-          border-top: 1px solid var(--border);
-          display: flex; align-items: center; justify-content: space-between;
-          flex-shrink: 0;
-        }
-        .footer-text { font-size: 10px; color: var(--text-muted); }
-        .footer-actions { display: flex; gap: 5px; }
-
-        /* ── Main ── */
-        .main {
-          flex: 1; display: flex; flex-direction: column;
-          height: 100vh; overflow: hidden; position: relative;
-        }
-
-        .ambient-glow {
-          position: absolute; top: 40%; left: 50%;
-          transform: translate(-50%, -50%);
-          width: 700px; height: 700px;
-          background: radial-gradient(circle, rgba(59,111,255,0.08) 0%, transparent 65%);
-          pointer-events: none; z-index: 0;
-          animation: ambientPulse 7s ease-in-out infinite alternate;
-        }
-
-        @keyframes ambientPulse {
-          0% { transform: translate(-50%,-50%) scale(1); opacity: 0.6; }
-          50% { transform: translate(-47%,-53%) scale(1.1); opacity: 1; }
-          100% { transform: translate(-53%,-47%) scale(0.92); opacity: 0.7; }
-        }
-
-        /* ── Chat Header ── */
-        .chat-header {
-          position: relative; z-index: 1;
-          padding: 16px 24px;
+        /* ── Header ── */
+        .top-header {
+          padding: 12px 24px;
           border-bottom: 1px solid var(--border);
           background: var(--surface);
           display: flex; align-items: center; justify-content: space-between;
           flex-shrink: 0;
-          gap: 12px;
         }
 
-        .chat-header-left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-        .chat-title {
-          font-family: 'Space Grotesk', sans-serif;
-          font-size: 17px; font-weight: 700; letter-spacing: -0.3px;
-          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        .header-title-group { display: flex; align-items: center; gap: 10px; }
+        .header-title { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-primary); }
+        .badge-stage {
+          background: var(--surface-3); border: 1px solid var(--border-2);
+          color: var(--accent-2); font-size: 10px; font-weight: 600;
+          padding: 2px 8px; border-radius: 12px; text-transform: uppercase;
         }
-        .chat-subtitle { font-size: 12px; color: var(--text-secondary); }
-
-        .chat-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-
-        .search-bar {
-          background: var(--surface-2);
-          border: 1px solid var(--border);
-          border-radius: 7px; padding: 6px 10px;
-          font-family: 'Inter', sans-serif; font-size: 12px;
-          color: var(--text-primary); outline: none;
-          width: 160px; transition: all 0.2s ease;
-        }
-        .search-bar::placeholder { color: var(--text-muted); }
-        .search-bar:focus { border-color: var(--accent); width: 200px; box-shadow: 0 0 0 2px var(--accent-glow); }
-
-        .live-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; }
-        .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: livePulse 2s ease-in-out infinite; }
-
-        @keyframes livePulse {
-          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
-          50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+        .badge-persona {
+          background: rgba(59,111,255,0.1); border: 1px solid var(--accent);
+          color: var(--accent); font-size: 10px; font-weight: 600;
+          padding: 2px 8px; border-radius: 12px;
         }
 
-        /* ── Main Tabs ── */
-        .main-tabs {
-          display: flex; gap: 0;
-          border-bottom: 1px solid var(--border);
-          background: var(--surface);
-          padding: 0 24px;
-          position: relative; z-index: 1;
+        .header-actions { display: flex; align-items: center; gap: 8px; }
+
+        .export-dropdown { display: flex; gap: 4px; }
+        .btn-export-opt {
+          background: var(--surface-2); border: 1px solid var(--border);
+          color: var(--text-secondary); border-radius: 5px;
+          padding: 4px 8px; font-size: 10px; font-weight: 600;
+          cursor: pointer; transition: all 0.2s ease;
+        }
+        .btn-export-opt:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ── Quick Actions Grid ── */
+        .quick-actions-bar {
+          padding: 10px 24px; border-bottom: 1px solid var(--border);
+          background: var(--surface); display: flex; gap: 8px; overflow-x: auto;
           flex-shrink: 0;
         }
+        .quick-actions-bar::-webkit-scrollbar { height: 3px; }
+        .quick-actions-bar::-webkit-scrollbar-thumb { background: var(--border); }
 
-        .main-tab {
-          padding: 10px 16px; font-size: 12px; font-weight: 600;
-          letter-spacing: 0.03em; text-transform: uppercase;
-          color: var(--text-muted); background: transparent;
-          border: none; cursor: pointer;
-          transition: all 0.2s ease;
-          border-bottom: 2px solid transparent; margin-bottom: -1px;
+        .btn-quick-chip {
+          display: flex; align-items: center; gap: 5px;
+          background: var(--surface-2); border: 1px solid var(--border);
+          border-radius: 16px; padding: 5px 11px; white-space: nowrap;
+          font-size: 11px; font-weight: 500; color: var(--text-secondary);
+          cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
         }
-        .main-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-        .main-tab:hover:not(.active) { color: var(--text-secondary); }
-        .main-tab .tab-badge {
-          background: var(--accent); color: white;
-          font-size: 9px; padding: 1px 5px;
-          border-radius: 10px; margin-left: 5px;
-          font-weight: 700;
+        .btn-quick-chip:hover { border-color: var(--accent); color: var(--text-primary); background: var(--accent-glow); }
+
+        /* ── Chat Container ── */
+        .chat-container {
+          flex: 1; overflow-y: auto; padding: 20px 24px;
+          display: flex; flex-direction: column; gap: 16px;
         }
+        .chat-container::-webkit-scrollbar { width: 4px; }
+        .chat-container::-webkit-scrollbar-thumb { background: var(--border); }
 
-        /* ── Chat Thread ── */
-        .chat-thread {
-          position: relative; z-index: 1; flex: 1;
-          overflow-y: auto; scroll-behavior: smooth;
-          padding: 20px 24px;
-          display: flex; flex-direction: column; gap: 14px;
-        }
-
-        .chat-thread::-webkit-scrollbar { width: 5px; }
-        .chat-thread::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
-
-        /* ── Empty State ── */
-        .empty-state {
-          flex: 1; display: flex; flex-direction: column;
-          align-items: center; justify-content: center;
-          text-align: center; gap: 12px; padding: 40px;
-        }
-        .empty-icon { font-size: 52px; color: var(--accent); line-height: 1; filter: drop-shadow(0 0 20px rgba(59,111,255,0.4)); }
-        .empty-heading { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; }
-        .empty-sub { font-size: 13px; color: var(--text-secondary); max-width: 340px; line-height: 1.6; }
-
-        /* ── Messages ── */
-        .message-row { display: flex; width: 100%; }
-        .message-row.user { justify-content: flex-end; }
-        .message-row.assistant { justify-content: flex-start; }
-
-        .message-wrapper { display: flex; flex-direction: column; max-width: 74%; gap: 4px; }
-        .message-row.user .message-wrapper { align-items: flex-end; }
-        .message-row.assistant .message-wrapper { align-items: flex-start; }
+        .message-wrapper { display: flex; flex-direction: column; gap: 4px; max-width: 820px; }
+        .message-wrapper.user { align-self: flex-end; }
+        .message-wrapper.assistant { align-self: flex-start; width: 100%; }
 
         .bubble {
-          font-size: 13.5px; line-height: 1.7;
-          transition: all 0.15s ease; position: relative;
+          padding: 12px 16px; border-radius: 12px; font-size: 13.5px; line-height: 1.6;
         }
         .bubble.user {
-          background: var(--accent); color: #fff;
-          padding: 11px 15px;
-          border-radius: 14px 14px 4px 14px;
+          background: var(--accent); color: #fff; border-radius: 14px 14px 4px 14px;
         }
         .bubble.assistant {
-          background: var(--surface-2);
-          border: 1px solid var(--border);
-          color: var(--text-primary);
-          padding: 14px 18px;
-          border-radius: 4px 14px 14px 14px;
-          box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+          background: var(--surface-2); border: 1px solid var(--border);
+          color: var(--text-primary); border-radius: 4px 14px 14px 14px;
         }
-        .bubble.assistant:hover { border-color: var(--border-2); }
 
-        .bubble.assistant .md-heading {
-          font-weight: 600; color: var(--text-primary);
-          margin: 10px 0 5px; font-size: 13px;
-          letter-spacing: 0.01em;
-        }
+        .bubble.assistant .md-heading { font-weight: 600; color: var(--text-primary); margin: 8px 0 4px; font-size: 13px; }
         .bubble.assistant .md-heading:first-child { margin-top: 0; }
         .bubble.assistant .md-paragraph { margin-bottom: 6px; }
-        .bubble.assistant .md-paragraph:last-child { margin-bottom: 0; }
-        .bubble.assistant .md-list { margin: 5px 0 8px 16px; list-style: disc; }
-        .bubble.assistant .md-list li { margin-bottom: 3px; color: var(--text-primary); font-size: 13.5px; }
-        .bubble.assistant strong { color: var(--text-primary); font-weight: 600; }
+        .bubble.assistant .md-list { margin: 4px 0 8px 16px; list-style: disc; }
+        .bubble.assistant .md-list li { margin-bottom: 3px; font-size: 13.5px; }
 
         .msg-meta { display: flex; align-items: center; gap: 6px; }
         .msg-time { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
-        .msg-actions { display: flex; gap: 3px; opacity: 0; transition: opacity 0.15s ease; }
+        .msg-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s ease; }
         .message-wrapper:hover .msg-actions { opacity: 1; }
+
         .msg-btn {
           background: var(--surface-3); border: 1px solid var(--border);
-          border-radius: 5px; color: var(--text-muted);
-          padding: 3px 6px; cursor: pointer; font-size: 10px;
-          display: flex; align-items: center; gap: 3px;
-          transition: all 0.15s ease; font-family: 'Inter', sans-serif;
+          border-radius: 5px; color: var(--text-muted); padding: 3px 6px;
+          cursor: pointer; font-size: 10px; display: flex; align-items: center; gap: 3px;
         }
         .msg-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-glow); }
 
-        .highlight { background: rgba(59,111,255,0.2); border-radius: 3px; padding: 0 2px; }
-
-        /* ── Typing Indicator ── */
-        .typing-indicator { display: flex; align-items: center; gap: 4px; padding: 2px 0; }
-        .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-secondary); animation: typingBounce 1.3s ease-in-out infinite; }
-        .typing-dot:nth-child(2) { animation-delay: 0.18s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.36s; }
-
-        @keyframes typingBounce {
-          0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
-          30% { transform: translateY(-7px); opacity: 1; }
-        }
-
         /* ── Input Bar ── */
         .input-bar {
-          position: relative; z-index: 1;
-          padding: 14px 24px 16px;
-          background: var(--surface);
-          border-top: 1px solid var(--border);
+          padding: 14px 24px 16px; border-top: 1px solid var(--border);
+          background: var(--surface); display: flex; gap: 8px; align-items: flex-end;
           flex-shrink: 0;
         }
 
-        .input-inner { display: flex; align-items: flex-end; gap: 8px; }
+        .input-wrapper {
+          flex: 1; position: relative; display: flex; align-items: center;
+          background: var(--surface-2); border: 1px solid var(--border);
+          border-radius: 10px; padding: 8px 12px; transition: all 0.2s ease;
+        }
+        .input-wrapper:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
         .chat-textarea {
-          flex: 1; background: var(--surface-2);
-          border: 1px solid var(--border); border-radius: 10px;
-          padding: 10px 14px;
-          font-family: 'Inter', sans-serif; font-size: 13.5px;
-          color: var(--text-primary); resize: none; outline: none;
-          line-height: 1.5; min-height: 42px; max-height: 120px;
-          overflow-y: auto; transition: all 0.2s ease;
+          width: 100%; background: transparent; border: none; outline: none;
+          color: var(--text-primary); font-family: 'Inter', sans-serif;
+          font-size: 13.5px; resize: none; max-height: 120px;
         }
-        .chat-textarea::placeholder { color: var(--text-muted); }
-        .chat-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-        .chat-textarea:disabled { opacity: 0.45; cursor: not-allowed; }
 
-        .btn-send {
-          width: 42px; height: 42px; flex-shrink: 0;
-          background: var(--accent); border: none; border-radius: 10px;
-          color: #fff; cursor: pointer;
-          display: flex; align-items: center; justify-content: center;
+        .btn-mic {
+          background: transparent; border: none; color: var(--text-muted);
+          cursor: pointer; padding: 4px; margin-right: 6px; display: flex; align-items: center;
           transition: all 0.2s ease;
         }
-        .btn-send:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 0 16px var(--accent-glow); }
+        .btn-mic:hover { color: var(--danger); }
+
+        .btn-send {
+          background: var(--accent); color: #fff; border: none; border-radius: 8px;
+          width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+          cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
+        }
+        .btn-send:hover:not(:disabled) { background: #2b5ce6; }
         .btn-send:disabled { opacity: 0.35; cursor: not-allowed; }
 
-        .input-hint { font-size: 10px; color: var(--text-muted); margin-top: 6px; padding-left: 2px; }
-
-        /* ── Prompt Suggestions ── */
-        .prompt-suggestions {
-          display: flex; gap: 6px; flex-wrap: wrap;
-          padding: 0 24px 10px; position: relative; z-index: 1;
+        /* ── Modal ── */
+        .modal-overlay {
+          position: fixed; inset: 0; z-index: 100;
+          background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+          display: flex; align-items: center; justify-content: center; padding: 20px;
         }
-        .prompt-chip {
-          background: var(--surface-2); border: 1px solid var(--border);
-          border-radius: 20px; padding: 4px 12px;
-          font-size: 11px; color: var(--text-secondary);
-          cursor: pointer; transition: all 0.15s ease;
-          white-space: nowrap;
+        .modal-content {
+          background: var(--surface); border: 1px solid var(--border-2);
+          border-radius: 12px; width: 100%; max-width: 440px; padding: 20px;
+          display: flex; flex-direction: column; gap: 14px; box-shadow: 0 12px 32px rgba(0,0,0,0.5);
         }
-        .prompt-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+        .modal-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; }
+        .modal-sub { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
 
-        /* ── Overview Tab ── */
-        .overview-panel {
-          position: relative; z-index: 1;
-          flex: 1; overflow-y: auto;
-          padding: 24px;
-        }
-        .overview-panel::-webkit-scrollbar { width: 5px; }
-        .overview-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
-
-        .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-
-        .stat-card {
-          background: var(--surface); border: 1px solid var(--border);
-          border-radius: 12px; padding: 16px 18px;
-        }
-        .stat-card-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
-        .stat-card-val { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: var(--accent); }
-        .stat-card-sub { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
-
-        .overview-section { margin-bottom: 20px; }
-        .overview-section-title { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
-
-        .progress-item { margin-bottom: 10px; }
-        .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 5px; }
-        .progress-bar-bg { background: var(--surface-2); border-radius: 6px; height: 6px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; border-radius: 6px; background: var(--accent); transition: width 0.6s ease; }
-
-        .tag-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tag {
-          padding: 4px 10px; border-radius: 6px;
-          font-size: 11px; font-weight: 500;
-          background: var(--surface-2); border: 1px solid var(--border);
-          color: var(--text-secondary);
-        }
-        .tag.active { background: rgba(59,111,255,0.15); border-color: rgba(59,111,255,0.4); color: var(--accent); }
-
-        /* ── Toast ── */
+        /* ── Toast & Utilities ── */
         .toast {
-          position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+          position: fixed; bottom: 20px; right: 20px; z-index: 200;
           background: var(--surface-3); border: 1px solid var(--border-2);
-          color: var(--text-primary); font-size: 12px; font-weight: 500;
-          padding: 8px 18px; border-radius: 20px;
-          opacity: 0; transition: all 0.25s ease; z-index: 999;
-          pointer-events: none; white-space: nowrap;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+          color: var(--text-primary); padding: 8px 14px; border-radius: 8px;
+          font-size: 12px; font-weight: 500; pointer-events: none;
+          opacity: 0; transform: translateY(10px); transition: all 0.25s ease;
         }
-        .toast.toast-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast-visible { opacity: 1; transform: translateY(0); }
 
-        /* ── Setup screen empty state ── */
-        .setup-empty {
-          flex: 1; display: flex; flex-direction: column;
-          align-items: center; justify-content: center;
-          text-align: center; gap: 16px; padding: 48px 32px;
-          position: relative; z-index: 1;
+        .empty-setup {
+          flex: 1; display: flex; flex-direction: column; align-items: center;
+          justify-content: center; text-align: center; gap: 12px; padding: 40px;
         }
-        .setup-empty-icon { font-size: 48px; opacity: 0.3; }
-        .setup-empty-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: var(--text-secondary); }
-        .setup-empty-sub { font-size: 13px; color: var(--text-muted); max-width: 300px; line-height: 1.6; }
+        .empty-icon { font-size: 40px; opacity: 0.4; }
+        .empty-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: var(--text-secondary); }
+        .empty-sub { font-size: 13px; color: var(--text-muted); max-width: 340px; line-height: 1.5; }
       `}</style>
 
       <Toast message={toastMsg} visible={toastVisible} />
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="modal-overlay" onClick={() => setShowSettingsModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-title">🔑 Gemini API Settings</div>
+            <div className="modal-sub">
+              Enter your custom Google Gemini API Key. If left empty, the application falls back to default environment key configuration.
+            </div>
+            <div className="form-group">
+              <label className="form-label">API Key</label>
+              <input
+                type="password"
+                className="form-input"
+                placeholder="AIzaSy..."
+                value={tempApiKey}
+                onChange={(e) => setTempApiKey(e.target.value)}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button
+                className="btn-secondary"
+                onClick={() => {
+                  setCustomApiKey('');
+                  setTempApiKey('');
+                  setShowSettingsModal(false);
+                  showToast('Custom API Key cleared');
+                }}
+              >
+                Clear
+              </button>
+              <button
+                className="btn-primary"
+                style={{ width: 'auto' }}
+                onClick={() => {
+                  setCustomApiKey(tempApiKey.trim());
+                  setShowSettingsModal(false);
+                  showToast(tempApiKey.trim() ? 'API Key saved' : 'Using default key');
+                }}
+              >
+                Save Settings
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="app-shell">
         {/* ── Sidebar ── */}
@@ -842,15 +924,20 @@ export default function App() {
           <div className="sidebar-brand">
             <div className="brand-row">
               <span className="brand-icon"><LightningIcon size={18} /></span>
-              <span className="brand-title">Hacklabvify</span>
+              <div>
+                <div className="brand-title">Hacklabvify</div>
+                <div className="brand-sub">by Team CYBERNEX</div>
+              </div>
             </div>
-            <div className="brand-sub">by Team CYBERNEX • AI Co-Founder</div>
+            <button className="btn-settings" onClick={() => setShowSettingsModal(true)} title="API Settings">
+              <SettingsIcon />
+            </button>
           </div>
 
           <div className="sidebar-tabs">
-            {['context', 'actions', 'saved'].map((tab) => (
+            {['context', 'persona', 'runway', 'saved'].map((tab) => (
               <button key={tab} className={`sidebar-tab ${activeTab === tab ? 'active' : ''}`} onClick={() => setActiveTab(tab)}>
-                {tab === 'context' ? 'Context' : tab === 'actions' ? 'Actions' : `Saved${savedInsights.length > 0 ? ` (${savedInsights.length})` : ''}`}
+                {tab === 'context' ? 'Context' : tab === 'persona' ? 'Persona' : tab === 'runway' ? 'Finance' : `Saved (${savedInsights.length})`}
               </button>
             ))}
           </div>
@@ -859,333 +946,243 @@ export default function App() {
             {/* Context Tab */}
             {activeTab === 'context' && (
               <>
-                {!contextSet ? (
-                  <div>
-                    <div className="section-label">Startup Context</div>
-                    <form onSubmit={handleStartSession}>
-                      <div className="form-group">
-                        <label className="form-label">Startup Name</label>
-                        <input className="form-input" type="text" value={startupName} onChange={(e) => setStartupName(e.target.value)} placeholder="Your startup name" required maxLength={50} />
-                        <div className="char-count">{startupName.length}/50</div>
+                <div>
+                  <div className="section-label">⚡ 1-Click Demo Presets</div>
+                  <div className="presets-row">
+                    {PRESET_STARTUPS.map((p) => (
+                      <div key={p.name} className="preset-chip" onClick={() => handleApplyPreset(p)}>
+                        <div className="preset-name">{p.name} ({p.stage})</div>
+                        <div className="preset-desc">{p.industry} • {p.tagline}</div>
                       </div>
-                      <div className="form-group">
-                        <label className="form-label">Industry / Domain</label>
-                        <input className="form-input" type="text" value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. FinTech, HealthTech, EdTech" required maxLength={60} />
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">One-line Tagline <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
-                        <input className="form-input" type="text" value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="e.g. Stripe for insurance claims" maxLength={80} />
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Stage</label>
-                        <select className="form-select" value={stage} onChange={(e) => setStage(e.target.value)}>
-                          {STAGE_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                      </div>
-                      <button type="submit" className="btn-primary" disabled={!startupName.trim() || !industry.trim()}>
-                        <LightningIcon size={14} /> Launch Session
-                      </button>
-                    </form>
+                    ))}
                   </div>
-                ) : (
-                  <div>
-                    <div className="section-label">Active Session</div>
-                    <div className="context-card">
-                      <div className="context-card-header">
-                        <span className="context-name">{startupName}</span>
-                        <button className="btn-edit" onClick={() => { setContextSet(false); setMessages([]); setMsgCount(0); }}>Edit</button>
-                      </div>
-                      {tagline && <div className="context-tagline">"{tagline}"</div>}
-                      <div className="context-pills">
-                        <span className="pill">{industry}</span>
-                        <span className="pill teal">{stage}</span>
-                      </div>
-                      <div className="session-stats">
-                        <div className="stat-box">
-                          <div className="stat-num">{messages.length}</div>
-                          <div className="stat-label">Messages</div>
-                        </div>
-                        <div className="stat-box">
-                          <div className="stat-num">{savedInsights.length}</div>
-                          <div className="stat-label">Saved</div>
-                        </div>
-                      </div>
-                    </div>
+                </div>
+
+                <div className="section-label">Startup Profile</div>
+                <form onSubmit={handleStartSession}>
+                  <div className="form-group">
+                    <label className="form-label">Startup Name</label>
+                    <input className="form-input" type="text" value={startupName} onChange={(e) => setStartupName(e.target.value)} placeholder="e.g. DevPulse AI" required maxLength={50} />
                   </div>
+                  <div className="form-group">
+                    <label className="form-label">Industry / Domain</label>
+                    <input className="form-input" type="text" value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. DevTools, FinTech" required maxLength={60} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">One-line Tagline</label>
+                    <input className="form-input" type="text" value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="e.g. AI vulnerability audit for PRs" maxLength={80} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Stage</label>
+                    <select className="form-select" value={stage} onChange={(e) => setStage(e.target.value)}>
+                      {STAGE_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <button type="submit" className="btn-primary" style={{ marginTop: '4px' }}>
+                    {contextSet ? 'Update Profile' : 'Initialize Co-Founder'}
+                  </button>
+                </form>
+
+                {contextSet && (
+                  <button className="btn-secondary" onClick={handleResetSession} style={{ width: '100%', marginTop: '6px' }}>
+                    Reset Session State
+                  </button>
                 )}
               </>
             )}
 
-            {/* Actions Tab */}
-            {activeTab === 'actions' && (
+            {/* Persona Tab */}
+            {activeTab === 'persona' && (
               <div>
-                <div className="section-label">Quick Actions</div>
-                {!contextSet ? (
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
-                    Set up your startup context first to unlock actions.
-                  </div>
-                ) : (
-                  <div className="quick-grid">
-                    {QUICK_ACTIONS.map((action) => (
-                      <button key={action.key} className="btn-action" onClick={() => handleQuickAction(action.key)} disabled={loading}>
-                        <span className="btn-action-icon">{action.icon}</span>
-                        <span className="btn-action-label">{action.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+                <div className="section-label">AI Persona Tone</div>
+                <div className="persona-selector">
+                  {ADVISOR_PERSONAS.map((p) => (
+                    <div
+                      key={p.id}
+                      className={`persona-card ${persona === p.id ? 'active' : ''}`}
+                      onClick={() => {
+                        setPersona(p.id);
+                        showToast(`Switched tone to ${p.name}`);
+                      }}
+                    >
+                      <span className="persona-icon">{p.icon}</span>
+                      <div>
+                        <div className="persona-title">{p.name}</div>
+                        <div className="persona-desc">{p.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            {/* Saved Tab */}
+            {/* Runway / Finance Tab */}
+            {activeTab === 'runway' && (
+              <div>
+                <div className="section-label">Financial Runway Calculator</div>
+                <div className="finance-card">
+                  <div className="form-group">
+                    <label className="form-label">Cash in Bank ($)</label>
+                    <input type="number" className="form-input" value={cashBalance} onChange={(e) => setCashBalance(Number(e.target.value))} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Monthly Expenses ($)</label>
+                    <input type="number" className="form-input" value={monthlyExpenses} onChange={(e) => setMonthlyExpenses(Number(e.target.value))} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Monthly Revenue ($)</label>
+                    <input type="number" className="form-input" value={monthlyRevenue} onChange={(e) => setMonthlyRevenue(Number(e.target.value))} />
+                  </div>
+                  
+                  <div className="finance-status" style={{ border: `1px solid ${getFinancialHealthBadge().color}`, color: getFinancialHealthBadge().color }}>
+                    {getFinancialHealthBadge().label}
+                  </div>
+
+                  <button className="btn-primary" onClick={handleAskFinancialOptimization}>
+                    ⚡ AI Runway Optimization
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Saved Insights Tab */}
             {activeTab === 'saved' && (
               <div>
-                <div className="section-label">Saved Insights</div>
+                <div className="section-label">Bookmarked Insights ({savedInsights.length})</div>
                 {savedInsights.length === 0 ? (
-                  <div className="empty-insights">
-                    Save AI responses you want to revisit — hover a message and click Save.
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
+                    No saved insights yet. Click the bookmark icon on any AI message.
                   </div>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {savedInsights.map((ins) => (
-                      <div key={ins.id} className="insight-item">
-                        <div className="insight-text">{ins.snippet}</div>
-                        <div className="insight-actions">
-                          <button className="btn-icon" onClick={() => handleCopyMessage(ins.full)}>
-                            <CopyIcon /> Copy
-                          </button>
-                          <button className="btn-icon danger" onClick={() => handleDeleteInsight(ins.id)}>
-                            <TrashIcon /> Remove
-                          </button>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {savedInsights.map((item) => (
+                      <div key={item.id} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '6px', padding: '8px 10px' }}>
+                        <div style={{ fontSize: '11.5px', color: 'var(--text-primary)', lineHeight: 1.4 }}>{item.snippet}</div>
+                        <div style={{ display: 'flex', justifySelf: 'flex-end', gap: '6px', marginTop: '6px' }}>
+                          <button className="btn-secondary" style={{ padding: '2px 6px', fontSize: '9px' }} onClick={() => handleCopyMessage(item.full)}>Copy</button>
+                          <button className="btn-secondary" style={{ padding: '2px 6px', fontSize: '9px', color: 'var(--danger)' }} onClick={() => handleDeleteInsight(item.id)}>Remove</button>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
-            )}
-          </div>
-
-          <div className="sidebar-footer">
-            <div>
-              <div className="footer-text">Built for HackLabify V1.0</div>
-              <div className="footer-text">Powered by Gemini</div>
-            </div>
-            {contextSet && (
-              <div className="footer-actions">
-                <button className="btn-icon" title="Export chat" onClick={handleExportChat}>
-                  <ExportIcon />
-                </button>
-                <button className="btn-icon danger" title="Clear chat" onClick={handleClearChat}>
-                  <TrashIcon />
-                </button>
               </div>
             )}
           </div>
         </aside>
 
-        {/* ── Main Area ── */}
-        <main className="main">
-          <div className="ambient-glow" aria-hidden="true" />
-
-          {/* Header */}
-          <header className="chat-header">
-            <div className="chat-header-left">
-              <h1 className="chat-title">{contextSet ? startupName : 'AI Startup Copilot'}</h1>
-              <p className="chat-subtitle">{contextSet ? `${industry} · ${stage} stage` : 'Your AI co-founder is ready'}</p>
+        {/* ── Main View ── */}
+        <main className="main-view">
+          <header className="top-header">
+            <div className="header-title-group">
+              <span className="header-title">{startupName || 'Startup AI Copilot'}</span>
+              {contextSet && <span className="badge-stage">{stage}</span>}
+              <span className="badge-persona">{activePersonaObj.name} Mode</span>
             </div>
-            <div className="chat-header-right">
-              {contextSet && (
-                <input
-                  className="search-bar"
-                  type="text"
-                  placeholder="Search chat…"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              )}
-              <div className="live-badge">
-                <span className="live-dot" />
-                Live
+
+            <div className="header-actions">
+              <div className="export-dropdown">
+                <button className="btn-export-opt" onClick={() => handleExportChat('txt')}>TXT</button>
+                <button className="btn-export-opt" onClick={() => handleExportChat('md')}>MD</button>
+                <button className="btn-export-opt" onClick={() => handleExportChat('json')}>JSON</button>
               </div>
             </div>
           </header>
 
-          {/* Main Tabs */}
-          {contextSet && (
-            <div className="main-tabs">
-              <button className={`main-tab ${activeTab !== 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('context')}>
-                Chat {msgCount > 0 && <span className="tab-badge">{msgCount}</span>}
+          {/* Quick Action Playbooks Bar */}
+          <div className="quick-actions-bar">
+            {QUICK_ACTIONS.map((action) => (
+              <button
+                key={action.key}
+                className="btn-quick-chip"
+                onClick={() => handleQuickAction(action.key)}
+                disabled={loading || !contextSet}
+                title={!contextSet ? 'Initialize startup context first' : action.label}
+              >
+                <span>{action.icon}</span>
+                <span>{action.label}</span>
               </button>
-              <button className={`main-tab ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>
-                Overview
-              </button>
-            </div>
-          )}
+            ))}
+          </div>
 
-          {/* Overview Panel */}
-          {activeTab === 'overview' && contextSet && (
-            <div className="overview-panel">
-              <div className="overview-grid">
-                <div className="stat-card">
-                  <div className="stat-card-label">Startup</div>
-                  <div className="stat-card-val" style={{ fontSize: 18 }}>{startupName}</div>
-                  <div className="stat-card-sub">{industry}</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-card-label">Stage</div>
-                  <div className="stat-card-val" style={{ fontSize: 18 }}>{stage}</div>
-                  <div className="stat-card-sub">Current phase</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-card-label">Messages</div>
-                  <div className="stat-card-val">{messages.length}</div>
-                  <div className="stat-card-sub">This session</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-card-label">Saved Insights</div>
-                  <div className="stat-card-val">{savedInsights.length}</div>
-                  <div className="stat-card-sub">Bookmarked</div>
-                </div>
-              </div>
-
-              <div className="overview-section">
-                <div className="overview-section-title">Copilot Coverage</div>
-                {[
-                  { label: 'Market Research', key: 'market', pct: messages.some(m => m.content.includes('TAM')) ? 100 : 0 },
-                  { label: 'Competitor Analysis', key: 'competitor', pct: messages.some(m => m.content.toLowerCase().includes('competitor')) ? 100 : 0 },
-                  { label: 'Go-to-Market', key: 'gtm', pct: messages.some(m => m.content.toLowerCase().includes('go-to-market') || m.content.toLowerCase().includes('launch')) ? 100 : 0 },
-                  { label: 'Fundraising', key: 'fundraising', pct: messages.some(m => m.content.toLowerCase().includes('pitch') || m.content.toLowerCase().includes('investor')) ? 100 : 0 },
-                  { label: 'Risk Assessment', key: 'risk', pct: messages.some(m => m.content.toLowerCase().includes('risk')) ? 100 : 0 },
-                ].map((item) => (
-                  <div className="progress-item" key={item.key}>
-                    <div className="progress-label">
-                      <span>{item.label}</span>
-                      <span style={{ color: item.pct ? 'var(--accent-2)' : 'var(--text-muted)' }}>{item.pct ? 'Done ✓' : 'Pending'}</span>
-                    </div>
-                    <div className="progress-bar-bg">
-                      <div className="progress-bar-fill" style={{ width: `${item.pct}%`, background: item.pct ? 'var(--accent-2)' : 'var(--border)' }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {tagline && (
-                <div className="overview-section">
-                  <div className="overview-section-title">Vision</div>
-                  <div style={{ fontStyle: 'italic', color: 'var(--text-secondary)', fontSize: 14, padding: '10px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, borderLeft: '3px solid var(--accent)' }}>
-                    "{tagline}"
-                  </div>
-                </div>
-              )}
-
-              <div className="overview-section">
-                <div className="overview-section-title">Quick Launch</div>
-                <div className="tag-grid">
-                  {QUICK_ACTIONS.map((a) => (
-                    <button key={a.key} className="tag" style={{ cursor: 'pointer', transition: 'all 0.15s ease' }}
-                      onClick={() => { setActiveTab('context'); handleQuickAction(a.key); }}>
-                      {a.icon} {a.label}
-                    </button>
-                  ))}
-                </div>
+          {/* Chat Container */}
+          {!contextSet && messages.length === 0 ? (
+            <div className="empty-setup">
+              <div className="empty-icon">⚡</div>
+              <div className="empty-title">Welcome to Hacklabvify</div>
+              <div className="empty-sub">
+                Your AI Startup Co-Founder (Problem Statement 10). Select a demo preset or configure your startup profile on the left to activate strategy playbooks.
               </div>
             </div>
-          )}
-
-          {/* Chat Thread */}
-          {activeTab !== 'overview' && (
-            <>
-              <div className="chat-thread">
-                {!contextSet ? (
-                  <div className="setup-empty">
-                    <div className="setup-empty-icon">⚡</div>
-                    <div className="setup-empty-title">Ready to build something great?</div>
-                    <div className="setup-empty-sub">Fill in your startup details in the sidebar to launch your AI co-founder session.</div>
+          ) : (
+            <div className="chat-container">
+              {filteredMessages.map((msg, idx) => (
+                <div key={idx} className={`message-wrapper ${msg.role}`}>
+                  <div className={`bubble ${msg.role}`}>
+                    {msg.role === 'assistant' ? parseMarkdown(msg.content) : msg.content}
                   </div>
-                ) : filteredMessages.length === 0 ? (
-                  <div className="empty-state">
-                    <div className="empty-icon">⚡</div>
-                    <h2 className="empty-heading">No results for "{searchQuery}"</h2>
-                    <p className="empty-sub">Try a different search term.</p>
-                  </div>
-                ) : (
-                  <>
-                    {filteredMessages.map((msg, i) => (
-                      <div key={i} className={`message-row ${msg.role}`}>
-                        <div className="message-wrapper">
-                          <div className={`bubble ${msg.role}`}>
-                            {msg.role === 'assistant' ? parseMarkdown(msg.content) : msg.content}
-                          </div>
-                          <div className="msg-meta">
-                            {msg.ts && <span className="msg-time">{formatTime(msg.ts)}</span>}
-                            <div className="msg-actions">
-                              <button className="msg-btn" onClick={() => handleCopyMessage(msg.content)}>
-                                <CopyIcon /> Copy
-                              </button>
-                              {msg.role === 'assistant' && (
-                                <button className="msg-btn" onClick={() => handleSaveInsight(msg.content)}>
-                                  ★ Save
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    {loading && (
-                      <div className="message-row assistant">
-                        <div className="message-wrapper">
-                          <div className="bubble assistant">
-                            <div className="typing-indicator">
-                              <span className="typing-dot" />
-                              <span className="typing-dot" />
-                              <span className="typing-dot" />
-                            </div>
-                          </div>
-                        </div>
+                  <div className="msg-meta">
+                    <span className="msg-time">{formatTime(msg.ts)}</span>
+                    {msg.role === 'assistant' && (
+                      <div className="msg-actions">
+                        <button className="msg-btn" onClick={() => handleCopyMessage(msg.content)} title="Copy message">
+                          <CopyIcon /> Copy
+                        </button>
+                        <button className="msg-btn" onClick={() => handleSaveInsight(msg.content)} title="Save insight">
+                          Bookmark
+                        </button>
                       </div>
                     )}
-                    <div ref={chatEndRef} />
-                  </>
-                )}
-              </div>
+                  </div>
+                </div>
+              ))}
 
-              {/* Prompt Suggestions */}
-              {contextSet && !loading && messages.length < 3 && (
-                <div className="prompt-suggestions">
-                  {[
-                    `What's my biggest risk right now?`,
-                    `How should I price ${startupName}?`,
-                    `Who is my ideal first customer?`,
-                    `What metrics matter most at ${stage} stage?`,
-                  ].map((chip, i) => (
-                    <button key={i} className="prompt-chip" onClick={() => callGemini(chip)}>{chip}</button>
-                  ))}
+              {loading && (
+                <div className="message-wrapper assistant">
+                  <div className="bubble assistant" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>AI Co-Founder analyzing strategy</span>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <span className="typing-dot" />
+                      <span className="typing-dot" />
+                      <span className="typing-dot" />
+                    </div>
+                  </div>
                 </div>
               )}
-
-              {/* Input Bar */}
-              <div className="input-bar">
-                <div className="input-inner">
-                  <textarea
-                    ref={textareaRef}
-                    className="chat-textarea"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder={contextSet ? 'Ask your co-founder anything…' : 'Set up your startup context to begin…'}
-                    disabled={!contextSet || loading}
-                    rows={1}
-                  />
-                  <button className="btn-send" onClick={handleSend} disabled={!contextSet || loading || !input.trim()}>
-                    <SendIcon />
-                  </button>
-                </div>
-                <div className="input-hint">Enter to send · Shift+Enter for new line</div>
-              </div>
-            </>
+              <div ref={chatEndRef} />
+            </div>
           )}
+
+          {/* Input Bar */}
+          <div className="input-bar">
+            <div className="input-wrapper">
+              <button
+                className="btn-mic"
+                onClick={toggleVoiceInput}
+                title={isListening ? 'Stop listening' : 'Voice dictation'}
+              >
+                <MicIcon active={isListening} />
+              </button>
+              <textarea
+                ref={textareaRef}
+                className="chat-textarea"
+                rows={1}
+                placeholder={contextSet ? "Ask your co-founder anything (e.g. 'How do we lower CAC?')..." : "Initialize startup profile on the left first..."}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={!contextSet || loading}
+              />
+            </div>
+            <button
+              className="btn-send"
+              onClick={handleSend}
+              disabled={!input.trim() || !contextSet || loading}
+              title="Send message"
+            >
+              ⚡
+            </button>
+          </div>
         </main>
       </div>
     </>

@@ -12,10 +12,10 @@
   [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
   <p align="center">
-    <strong>Hacklabvify</strong> is an AI-powered co-founder platform built by <strong>Team CYBERNEX</strong> for <strong>Problem Statement 10: AI Startup Copilot</strong>. Driven by <strong>Google Gemini 3.6 Flash</strong>, it provides instant market research, business planning, competitor analysis, fundraising prep, task management, and strategic decision support.
+    <strong>Hacklabvify</strong> is an advanced AI-powered co-founder platform developed by <strong>Team CYBERNEX</strong> for <strong>Problem Statement 10: AI Startup Copilot</strong>. Driven by <strong>Google Gemini 3.6 Flash</strong>, it provides instant market research, business planning, competitor analysis, fundraising prep, financial runway optimization, task management, and strategic decision support.
   </p>
 
-  [Problem Statement](#-problem-statement--objective) • [Features](#-key-features) • [Playbooks](#-strategy-playbooks) • [Getting Started](#-getting-started) • [Architecture](#-project-structure)
+  [Problem Statement](#-problem-statement--objective) • [Features](#-key-features) • [Playbooks](#-strategy-playbooks-alignment) • [Getting Started](#-getting-started) • [Architecture](#-project-structure)
 
 </div>
 
@@ -25,7 +25,7 @@
 
 - [🎯 Problem Statement & Objective](#-problem-statement--objective)
 - [🚀 Project Overview](#-project-overview)
-- [✨ Key Features](#-key-features)
+- [✨ Key Features & Enhancements](#-key-features--enhancements)
 - [🎯 Strategy Playbooks Alignment](#-strategy-playbooks-alignment)
 - [👥 Built by Team CYBERNEX](#-built-by-team-cybernex)
 - [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
@@ -55,39 +55,63 @@ Engineered specifically for **Problem Statement 10**, **Hacklabvify** by **Team 
 1. **Contextual Intelligence**: Customizes advice based on your startup's exact stage (*Idea*, *MVP*, *Beta*, *Revenue*, *Scaling*), industry, and vision.
 2. **Instant Strategy Execution**: Single-click playbooks for TAM/SAM/SOM, ICP, Competitive Moats, Business Models, and Pitch Deck Outlines.
 3. **Task & Decision Support**: Guarantees **⚡ Your Next 3 Actions** in every response so founders take immediate, high-impact steps.
-4. **Session & Knowledge Locker**: Save key strategic insights, search chat history in real-time, and export full advisory reports.
+4. **Financial Runway Calculator**: Calculates net monthly burn, cash runway months, and triggers 1-click AI burn optimization strategies.
+5. **Session & Knowledge Locker**: Save key strategic insights, search chat history in real-time, and export full advisory reports in `.md`, `.txt`, or `.json`.
 
 ---
 
-## ✨ Key Features
+## ✨ Key Features & Enhancements
 
 <details open>
-<summary><strong>🎯 Custom Startup Context Engine</strong></summary>
+<summary><strong>🚀 1-Click Demo Startup Presets</strong></summary>
 
-- Configure startup details: **Name**, **Industry**, **Stage**, and **Tagline/Vision**.
-- Generates tailored, founder-level advice specifically targeted to your business model.
+- Instantly load realistic pre-configured startup profiles:
+  - 🤖 **DevPulse AI** (DevTools & AI • MVP Stage)
+  - 🩺 **MediMind** (HealthTech & AI • Idea Stage)
+  - 💳 **PayFlow Global** (FinTech • Revenue Stage)
+- Enables judges and users to evaluate strategy playbooks in 1 click without manual data entry.
 </details>
 
 <details open>
-<summary><strong>⚡ 8 Quick-Action Strategy Playbooks</strong></summary>
+<summary><strong>🎭 Multi-Persona AI Tone Selector</strong></summary>
 
-- Instant single-click prompts covering critical startup pillars.
-- Formatted with clear markdown headers, bold highlights, bullet points, and execution steps.
+- Toggle AI co-founder advisor tones:
+  - ⚡ **YC Partner**: Direct, speed & metrics-driven, growth focus.
+  - 🛡️ **Risk & Legal Expert**: Focuses on compliance, security, IP & contract safeguards.
+  - 🚀 **Growth Lead**: Focuses on virality, CAC reduction, LTV & funnel optimization.
 </details>
 
 <details open>
-<summary><strong>💾 Task Management & Insight Locker</strong></summary>
+<summary><strong>💰 Financial Runway & Burn Rate Calculator</strong></summary>
 
-- **Insight Locker**: Bookmark key AI recommendations for quick reference during product builds.
-- **Export Session**: Export full multi-turn conversational advisory logs into downloadable `.txt` reports.
-- **Searchable History**: In-flight keyword search across all messages.
+- Interactive financial modeling widget:
+  - Cash Balance ($), Monthly Expenses ($), Monthly Revenue ($).
+  - Calculates Net Monthly Burn, Cash Runway (Months), and Financial Health Indicators (🟢 Healthy / 🟡 Moderate / 🔴 Critical / 💎 Net Profitable).
+  - 1-click **⚡ AI Runway Optimization** to generate cost reduction & revenue acceleration roadmaps.
 </details>
 
 <details open>
-<summary><strong>🌌 Modern Dark Glassmorphic Interface</strong></summary>
+<summary><strong>🔑 In-App Gemini API Key Configuration</strong></summary>
 
-- Responsive UI built with custom design tokens (`--surface`, `--accent`, `--border`).
-- Dynamic typing indicators, smooth auto-resizing textareas, toast notifications, and micro-interactions.
+- Floating settings gear icon in top header allowing users and judges to enter or update their custom Google Gemini API Key directly in the UI with instant `localStorage` persistence.
+</details>
+
+<details open>
+<summary><strong>🎙️ Voice Input (Speech-to-Text Dictation)</strong></summary>
+
+- Native Web Speech API integration (`webkitSpeechRecognition`) for hands-free prompt dictation.
+</details>
+
+<details open>
+<summary><strong>💾 Persistent LocalStorage Engine</strong></summary>
+
+- Automatically syncs startup profiles, chat history, persona selections, financial inputs, and bookmarked insights to `localStorage` so browser reloads never lose session progress.
+</details>
+
+<details open>
+<summary><strong>📥 Multi-Format Session Exporters</strong></summary>
+
+- Export session logs as **Markdown (`.md`)**, **Plain Text (`.txt`)**, or **JSON Data (`.json`)**.
 </details>
 
 ---
@@ -102,7 +126,8 @@ Here is how **Hacklabvify** fulfills every core requirement of **Problem Stateme
 | **Business Planning** | 💡 Business Model & 📋 GTM Plan | Monetization strategies, pricing models, 90-day launch roadmap |
 | **Competitor Analysis** | 🏆 Competitor Analysis | Top 5 competitors breakdown, differentiators & competitive moat definition |
 | **Fundraising Prep** | 💰 Pitch Prep & 📊 Pitch Deck | 10-slide deck outline, investor narrative, objection handling & key metrics |
-| **Strategic Decision Support**| ⚠️ Risk Assessment & 🎯 ICP | Risk mitigation matrix, Ideal Customer Profile & buying triggers |
+| **Strategic Decision Support**| ⚠️ Risk Assessment & 🎭 Persona Tone | Risk mitigation matrix, regulatory & IP safeguards, YC Partner evaluation |
+| **Financial & Business Planning** | 💰 Runway Calculator Widget | Net burn calculation, runway months, automated AI burn optimization |
 | **Task Management** | ⚡ Next 3 Actions & Saved Insights | Immediate 3-step action items per prompt & bookmarkable insight locker |
 
 ---
@@ -170,7 +195,7 @@ hacklabvify/
 ├── README.md             # Project documentation (Problem Statement 10 & Team CYBERNEX)
 └── src/
     ├── main.jsx          # React app DOM mounting point
-    └── App.jsx           # Core Application Logic & Glassmorphism UI
+    └── App.jsx           # Core Application Logic, Presets, Financial Calculator & Glassmorphic UI
 ```
 
 ---
@@ -179,7 +204,7 @@ hacklabvify/
 
 - **Palette**: Deep space navy tones (`#080C14`, `#0F1623`) contrasted with vibrant electric blue (`#3B6FFF`) and neon emerald (`#00D4AA`).
 - **Micro-Animations**: Smooth scale transitions on button hover, pulse effects on active AI loading state, dynamic toast slide-in notifications.
-- **Accessibility & UX**: Keyboard shortcuts (`Enter` to submit, `Shift+Enter` for newlines), responsive sidebar & collapsible tab views.
+- **Accessibility & UX**: Speech-to-text dictation, keyboard shortcuts (`Enter` to submit, `Shift+Enter` for newlines), responsive sidebar & collapsible tab views.
 
 ---
 
