@@ -2,8 +2,9 @@
 
   # ⚡ HACKLABVIFY
 
-  ### *Your AI Co-Founder & Strategic Startup Growth Engine*
+  ### *Created by Team CYBERNEX — Your AI Co-Founder & Strategic Startup Growth Engine*
 
+  [![Team CYBERNEX](https://img.shields.io/badge/Team-CYBERNEX-FF4D6D?style=for-the-badge&logo=rocket&logoColor=white)](#-built-by-team-cybernex)
   [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
   [![Vite](https://img.shields.io/badge/Vite-6.0.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
   [![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.6_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
@@ -11,10 +12,10 @@
   [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge)](https://github.com/rohilkohli/Hacklabvify/pulls)
 
   <p align="center">
-    <strong>Hacklabvify</strong> is a high-performance, interactive AI-powered co-founder platform tailored for startup founders, hackathon builders, and entrepreneurs. Driven by <strong>Google Gemini 3.6 Flash</strong>, it provides instant strategic advisory, pitch deck generator, market analysis, competitor intelligence, and actionable execution plans.
+    <strong>Hacklabvify</strong> is a high-performance, interactive AI-powered co-founder platform developed by <strong>Team CYBERNEX</strong>. Tailored for startup founders, hackathon builders, and entrepreneurs, it is driven by <strong>Google Gemini 3.6 Flash</strong> to deliver instant strategic advisory, pitch deck outlines, market analysis, competitor intelligence, and actionable execution steps.
   </p>
 
-  [Features](#-key-features) • [Playbooks](#-strategy-playbooks) • [Getting Started](#-getting-started) • [Architecture](#-project-structure) • [License](#-license)
+  [Features](#-key-features) • [Playbooks](#-strategy-playbooks) • [Getting Started](#-getting-started) • [Architecture](#-project-structure) • [Team](#-built-by-team-cybernex)
 
 </div>
 
@@ -25,6 +26,7 @@
 - [🚀 Project Overview](#-project-overview)
 - [✨ Key Features](#-key-features)
 - [🎯 Strategy Playbooks](#-strategy-playbooks)
+- [👥 Built by Team CYBERNEX](#-built-by-team-cybernex)
 - [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
 - [📥 Getting Started](#-getting-started)
 - [📁 Project Structure](#-project-structure)
@@ -39,7 +41,7 @@
 
 Building a startup is fast-paced and challenging. Founders often lack immediate access to experienced advisors for critical decisions regarding market positioning, fundraising, go-to-market strategies, and risk mitigation.
 
-**Hacklabvify** acts as an always-on, intelligent **AI Co-Founder**:
+Developed by **Team CYBERNEX**, **Hacklabvify** acts as an always-on, intelligent **AI Co-Founder**:
 1. **Contextual Awareness**: Customizes advice based on your startup's exact stage (*Idea*, *MVP*, *Beta*, *Revenue*, *Scaling*), industry, and vision.
 2. **Instant Playbooks**: One-click generation of comprehensive analysis (TAM/SAM/SOM, ICP, Competitive Moats, Pitch Outlines).
 3. **Action-Oriented Recommendations**: Every response guarantees **⚡ Your Next 3 Actions** to keep founders executing effectively.
@@ -97,6 +99,14 @@ Hacklabvify includes 8 built-in AI strategy playbooks tailored to accelerate sta
 
 ---
 
+## 👥 Built by Team CYBERNEX
+
+Hacklabvify is engineered and presented by **Team CYBERNEX**. 
+
+> *"Empowering founders and hackathon innovators with real-time AI strategic intelligence."*
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Frontend Framework**: [React 18](https://react.dev/)
@@ -132,16 +142,11 @@ Ensure you have Node.js installed on your machine:
    ```bash
    npm run dev
    ```
-   Open your browser and navigate to `http://localhost:5173` (or the port shown in terminal).
+   Open your browser and navigate to `http://localhost:5173`.
 
 4. **Build for Production**
    ```bash
    npm run build
-   ```
-
-5. **Preview Production Build**
-   ```bash
-   npm run preview
    ```
 
 ---
@@ -154,10 +159,11 @@ hacklabvify/
 ├── package.json          # Dependency specs & script definitions
 ├── vite.config.js        # Vite bundler configuration
 ├── .gitignore            # Git exclusion rules
-├── README.md             # Project documentation
+├── .env.example          # Environment variables template
+├── README.md             # Project documentation (Team CYBERNEX)
 └── src/
     ├── main.jsx          # React app DOM mounting point
-    └── App.jsx           # Core Application Logic, Gemini API Client & Glassmorphism UI
+    └── App.jsx           # Core Application Logic & Glassmorphism UI
 ```
 
 ---
@@ -175,7 +181,7 @@ hacklabvify/
 - [ ] **Multi-Model Support**: Switch between Gemini Flash, Pro, and custom fine-tuned founder models.
 - [ ] **PDF Pitch Deck Exporter**: Convert AI generated slide outlines directly into downloadable pitch decks.
 - [ ] **Financial Modeling Tool**: Interactive financial projections & burn rate calculator.
-- [ ] **User Auth & Persistence**: Cloud database integration (Firebase / Supabase) to persist startup projects across devices.
+- [ ] **User Auth & Persistence**: Cloud database integration to persist startup projects across devices.
 
 ---
 
@@ -196,5 +202,5 @@ Contributions are welcome! If you'd like to improve Hacklabvify:
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
 <div align="center">
-  <sub>Built with ⚡ for startup founders and hackathon innovators.</sub>
+  <sub>Built with ⚡ by <strong>Team CYBERNEX</strong> for startup founders and hackathon innovators.</sub>
 </div>

@@ -842,9 +842,9 @@ export default function App() {
           <div className="sidebar-brand">
             <div className="brand-row">
               <span className="brand-icon"><LightningIcon size={18} /></span>
-              <span className="brand-title">Copilot</span>
+              <span className="brand-title">Hacklabvify</span>
             </div>
-            <div className="brand-sub">AI Co-Founder</div>
+            <div className="brand-sub">by Team CYBERNEX • AI Co-Founder</div>
           </div>
 
           <div className="sidebar-tabs">
