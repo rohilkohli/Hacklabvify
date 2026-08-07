@@ -684,7 +684,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         }
         .top-lang-select:hover { border-color: var(--accent-blue); }
 
-        /* ── Centered Main Container Card & Liquid Glass ── */
+        /* ── Centered Main Container Card & True Liquid Glass ── */
         .app-window-wrapper {
           position: relative; z-index: 10; display: flex; align-items: center; justify-content: center;
           height: 100vh; width: 100vw; padding: 24px;
@@ -692,30 +692,40 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
 
         .main-container-card {
           width: 100%; max-width: 1100px; height: 88vh; max-height: 820px;
-          background: var(--card-bg); border: 1px solid var(--card-border);
-          border-radius: 24px; box-shadow: var(--shadow); display: flex; overflow: hidden;
-          backdrop-filter: blur(14px) saturate(170%);
-          -webkit-backdrop-filter: blur(14px) saturate(170%);
+          border-radius: 24px; display: flex; overflow: hidden;
+          backdrop-filter: blur(20px) saturate(180%);
+          -webkit-backdrop-filter: blur(20px) saturate(180%);
+          transition: all 0.3s ease;
+        }
+
+        .theme-dark .main-container-card {
+          background: rgba(22, 30, 44, 0.62);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.7), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
         }
 
         .theme-light .main-container-card {
-          background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.48) 100%);
-          border: 1.5px solid rgba(255, 255, 255, 0.95);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.4) 100%);
+          border: 1.5px solid rgba(255, 255, 255, 0.92);
+          box-shadow: 
+            0 30px 70px -12px rgba(15, 23, 42, 0.14),
+            inset 0 1px 2px 0 rgba(255, 255, 255, 0.98),
+            inset 0 -1px 1px 0 rgba(0, 0, 0, 0.03);
         }
 
         .theme-light .context-section {
-          background: rgba(255, 255, 255, 0.62);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.9);
+          background: rgba(255, 255, 255, 0.55);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.85);
           box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
         }
 
         .theme-light .msg-row.assistant .msg-bubble {
-          background: rgba(255, 255, 255, 0.78);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.95);
+          background: rgba(255, 255, 255, 0.75);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.9);
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
 
@@ -723,6 +733,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .login-view-container {
           width: 100%; height: 100%; overflow-y: auto; padding: 32px 40px;
           display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+          background: transparent;
         }
         .login-view-container::-webkit-scrollbar { width: 4px; }
         .login-view-container::-webkit-scrollbar-thumb { background: var(--card-border); }
@@ -734,6 +745,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .tip-item {
           background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 16px;
           padding: 10px 16px; font-size: 12.5px; color: var(--text-secondary); text-align: left;
+          backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         }
         .tip-btn {
           width: 100%; cursor: pointer; transition: all 0.2s ease; font-family: inherit;
@@ -743,8 +755,9 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .login-form-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 480px; }
 
         .input-login {
-          width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
+          width: 100%; background: var(--input-bg); border: 1px solid var(--card-border);
           border-radius: 12px; padding: 11px 14px; font-size: 13.5px; color: var(--text-primary); outline: none;
+          backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         }
         .input-login:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px var(--accent-glow); }
         .input-login option { background: var(--card-bg); color: var(--text-primary); }
@@ -753,12 +766,13 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
           border-radius: 24px; padding: 11px 20px; font-size: 13.5px; font-weight: 600; color: #3B82F6;
           cursor: pointer; transition: all 0.2s ease; margin-top: 4px; box-shadow: var(--shadow);
+          backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         }
         .glow-start-btn:hover { border-color: #3B82F6; background: var(--accent-glow); transform: translateY(-1px); }
 
         /* ── Split Left & Right Columns ── */
-        .chat-left-col { flex: 1.2; display: flex; flex-direction: column; border-right: 1px solid var(--card-border); background: var(--left-bg); height: 100%; }
-        .context-tools-col { flex: 0.9; display: flex; flex-direction: column; background: var(--right-bg); height: 100%; overflow-y: auto; padding: 16px 18px; gap: 12px; }
+        .chat-left-col { flex: 1.2; display: flex; flex-direction: column; border-right: 1px solid var(--card-border); background: transparent; height: 100%; }
+        .context-tools-col { flex: 0.9; display: flex; flex-direction: column; background: transparent; height: 100%; overflow-y: auto; padding: 16px 18px; gap: 12px; }
         .context-tools-col::-webkit-scrollbar { width: 3px; }
         .context-tools-col::-webkit-scrollbar-thumb { background: var(--card-border); }
 
