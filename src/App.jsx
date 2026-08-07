@@ -30,11 +30,11 @@ const ADVISOR_PERSONAS = [
 ];
 
 const QUICK_SUGGESTIONS = [
-  { label: '💡 Knowledge point', prompt: 'Tell me more about the key business concepts and growth metrics for this startup.' },
-  { label: '🔍 Market Research', prompt: 'Give me a detailed Market Research breakdown (TAM/SAM/SOM, trends, customer segments).' },
-  { label: '🏆 Competitor Analysis', prompt: 'Analyze top 5 competitors, differentiators, and our competitive moat.' },
-  { label: '💰 Pitch Deck Outline', prompt: 'Create a 10-slide pitch deck outline with slide titles and bullet points.' },
-  { label: '📊 Runway & Unit Economics', prompt: 'Analyze our unit economics, CAC/LTV, and cash burn mitigation strategies.' }
+  { label: '⚡ 3 Next Actions', prompt: 'Give me the top 3 immediate actionable execution steps for our startup this week.' },
+  { label: '🔍 Market Research', prompt: 'Give me a comprehensive Market Research overview (TAM/SAM/SOM, trends, target customer segments).' },
+  { label: '🏆 Competitor Analysis', prompt: 'Analyze the top 5 competitors, key differentiators, and our competitive moat.' },
+  { label: '💰 Pitch Deck Outline', prompt: 'Create a complete 10-slide pitch deck outline with slide titles and key bullet points.' },
+  { label: '📊 Financial Runway', prompt: 'Analyze our unit economics, CAC/LTV, burn rate, and runway optimization strategies.' }
 ];
 
 // ── Markdown Parser ──────────────────────────────────────────────
@@ -157,7 +157,7 @@ function UpArrowIcon() {
 function BotAvatar() {
   return (
     <div className="bot-avatar">
-      🤖
+      ⚡
     </div>
   );
 }
@@ -175,7 +175,7 @@ export default function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('hv_theme') || 'dark');
   const [language, setLanguage] = useState(() => localStorage.getItem('hv_lang') || 'English');
   const [username, setUsername] = useState(() => localStorage.getItem('hv_user') || 'Rohil Kohli');
-  const [startupName, setStartupName] = useState(() => localStorage.getItem('hv_startupName') || '');
+  const [startupName, setStartupName] = useState(() => localStorage.getItem('hv_startupName') || 'DevPulse AI');
   const [stage, setStage] = useState(() => localStorage.getItem('hv_stage') || 'MVP');
   const [sessionActive, setSessionActive] = useState(() => localStorage.getItem('hv_session') === 'true');
   const [customApiKey, setCustomApiKey] = useState(() => localStorage.getItem('hv_custom_api_key') || '');
@@ -237,7 +237,7 @@ export default function App() {
 
   const activePersonaObj = ADVISOR_PERSONAS.find((p) => p.id === persona) || ADVISOR_PERSONAS[0];
 
-  const systemContext = `You are Virtual Technical Assistant & AI Startup Copilot (Problem Statement 10). ${activePersonaObj.desc}. Respond in ${language}. Founder: "${username}", Startup: "${startupName || 'DevPulse AI'}" (${stage} stage). Give sharp, actionable founder guidance. Format with bold terms, ## headers, and bullet points. Always conclude with ## ⚡ Your Next 3 Actions.`;
+  const systemContext = `You are Hacklabvify AI Startup Copilot (Problem Statement 10 by Team CYBERNEX). ${activePersonaObj.desc}. Respond in ${language}. Founder: "${username}", Startup: "${startupName || 'DevPulse AI'}" (${stage} stage). Provide sharp, founder-level strategic advice. Format with bold terms, ## headers, and bullet points. Conclude with ## ⚡ Your Next 3 Actions. Keep response under 350 words.`;
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -259,7 +259,7 @@ export default function App() {
       fullPrompt += `\n\n[ATTACHED CODE BUFFER ${codeFilename ? `(${codeFilename})` : ''}]:\n\`\`\`\n${codeContext.trim()}\n\`\`\``;
     }
     if (terminalErrors.trim()) {
-      fullPrompt += `\n\n[TERMINAL TRACEBACK ERRORS]:\n\`\`\`\n${terminalErrors.trim()}\n\`\`\``;
+      fullPrompt += `\n\n[TERMINAL & BUILD TRACEBACKS]:\n\`\`\`\n${terminalErrors.trim()}\n\`\`\``;
     }
     if (attachedFile) {
       fullPrompt += `\n\n[ATTACHED FILE (${attachedFile.name})]:\n${attachedFile.content}`;
@@ -321,7 +321,7 @@ export default function App() {
     if (messages.length === 0) {
       setMessages([{
         role: 'assistant',
-        content: `Hi **${username.trim()}**! I have the instructions for the **${chosenName}** startup co-pilot session (${stage} stage). How can I help you today?`,
+        content: `Welcome **${username.trim()}**! I am your AI Startup Co-Founder for **${chosenName}** (${stage} stage). How can I assist your startup strategy today? ⚡`,
         ts: Date.now(),
       }]);
     }
@@ -334,7 +334,7 @@ export default function App() {
     setSessionActive(true);
     setMessages([{
       role: 'assistant',
-      content: `Hi **${username || 'Founder'}**! Loaded **${preset.name}** (${preset.industry} • ${preset.stage} stage). "${preset.tagline}". How can I help you today?`,
+      content: `Welcome **${username || 'Founder'}**! Loaded **${preset.name}** (${preset.industry} • ${preset.stage} stage). "${preset.tagline}". Choose a Strategy Playbook below or ask any question! 🚀`,
       ts: Date.now(),
     }]);
     showToast(`Loaded ${preset.name}`);
@@ -355,7 +355,7 @@ export default function App() {
   const handleClearSession = () => {
     setMessages([{
       role: 'assistant',
-      content: `Session cleared. Ready to assist for **${startupName || 'DevPulse AI'}**. Ask a question or paste code/error context!`,
+      content: `Session reset. Ready to assist **${startupName || 'DevPulse AI'}**. Ask a strategy question or paste code/terminal context!`,
       ts: Date.now(),
     }]);
     setCodeContext('');
@@ -367,7 +367,7 @@ export default function App() {
 
   const handleLogout = () => {
     setSessionActive(false);
-    showToast('Returned to Main Page');
+    showToast('Returned to Start Screen');
   };
 
   const handleFileUpload = (e) => {
@@ -491,7 +491,7 @@ export default function App() {
           border-radius: 16px; box-shadow: var(--shadow); display: flex; overflow: hidden;
         }
 
-        /* ── Login / Welcome Screen View ── */
+        /* ── Start Mission / Welcome View ── */
         .login-view-container {
           width: 100%; height: 100%; overflow-y: auto; padding: 32px 40px;
           display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
@@ -502,13 +502,13 @@ export default function App() {
         .login-header h1 { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; color: #3B82F6; margin-bottom: 6px; }
         .login-header p { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 20px; }
 
-        .login-tips { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 460px; margin-bottom: 20px; }
+        .login-tips { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 480px; margin-bottom: 20px; }
         .tip-item {
           background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 20px;
           padding: 10px 16px; font-size: 12.5px; color: var(--text-secondary); text-align: left;
         }
 
-        .login-form-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 460px; }
+        .login-form-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 480px; }
 
         .input-login {
           width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
@@ -560,8 +560,8 @@ export default function App() {
         .msg-row.user { align-self: flex-end; flex-direction: row-reverse; }
 
         .bot-avatar {
-          width: 32px; height: 32px; border-radius: 50%; background: rgba(236, 72, 153, 0.15);
-          display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+          width: 32px; height: 32px; border-radius: 50%; background: rgba(59, 130, 246, 0.15);
+          display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
         }
 
         .msg-bubble {
@@ -660,26 +660,26 @@ export default function App() {
       <div className="app-window-wrapper">
         <div className="main-container-card">
 
-          {/* VIEW 1: Login / Welcome Mission Screen */}
+          {/* VIEW 1: Start Mission / Startup Setup Screen */}
           {!sessionActive ? (
             <div className="login-view-container">
               <div className="login-header">
-                <h1>Virtual Technical Assistant</h1>
-                <p>Welcome to your AI-powered companion for Google Cloud & Startup technical support.</p>
+                <h1>Hacklabvify — AI Startup Copilot</h1>
+                <p>Team CYBERNEX • Problem Statement 10: AI Startup Copilot & Strategic Growth Assistant</p>
               </div>
 
               <div className="login-tips">
-                <div className="tip-item">📟 "Paste the error message from your terminal"</div>
-                <div className="tip-item">🐍 "Paste your Python code to fix indentation"</div>
-                <div className="tip-item">📸 "Upload a screenshot to ask what's wrong"</div>
-                <div className="tip-item">💡 "Ask any question about the workshop"</div>
+                <div className="tip-item">🔍 <strong>Market Research</strong>: TAM/SAM/SOM breakdown & customer segments</div>
+                <div className="tip-item">🏆 <strong>Competitor Analysis</strong>: Top 5 competitors & competitive moat definition</div>
+                <div className="tip-item">💰 <strong>Pitch Deck Outline</strong>: 10-slide deck architecture & investor narrative</div>
+                <div className="tip-item">📊 <strong>Runway Calculator</strong>: Burn rate analysis & financial runway optimization</div>
               </div>
 
               <form onSubmit={handleStartMission} className="login-form-group">
                 <input
                   type="text"
                   className="input-login"
-                  placeholder="What's your name?"
+                  placeholder="What's your founder name?"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -690,44 +690,43 @@ export default function App() {
                   value={startupName}
                   onChange={(e) => setStartupName(e.target.value)}
                 >
-                  <option value="" disabled>Select a workshop or startup...</option>
-                  <option value="cloud-run-ai-1">cloud-run-ai-1 (Google Cloud Codelab)</option>
-                  <option value="DevPulse AI">DevPulse AI (DevTools MVP)</option>
-                  <option value="MediMind">MediMind (HealthTech AI)</option>
-                  <option value="PayFlow Global">PayFlow Global (FinTech)</option>
+                  <option value="" disabled>Select startup stage or demo profile...</option>
+                  <option value="DevPulse AI">DevPulse AI (DevTools & AI • MVP Stage)</option>
+                  <option value="MediMind">MediMind (HealthTech & AI • Idea Stage)</option>
+                  <option value="PayFlow Global">PayFlow Global (FinTech • Revenue Stage)</option>
                 </select>
 
-                <button type="submit" className="glow-start-btn">Start Mission</button>
+                <button type="submit" className="glow-start-btn">Start Co-Founder Session</button>
               </form>
 
               <div style={{ marginTop: '20px', display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
                 {PRESET_STARTUPS.map((p) => (
                   <button key={p.name} className="suggestion-chip" onClick={() => handleApplyPreset(p)}>
-                    🚀 {p.name}
+                    🚀 {p.name} ({p.stage})
                   </button>
                 ))}
               </div>
             </div>
           ) : (
-            /* VIEW 2: Active Split Chat & Context Tooling Screen */
+            /* VIEW 2: Active Co-Founder Advisory Workspace */
             <>
-              {/* Left Column: Chat */}
+              {/* Left Column: Advisory Chat */}
               <div className="chat-left-col">
                 <header className="chat-header">
                   <div className="codelab-title">
                     <span style={{ color: '#3B82F6' }}>🔹</span>
-                    <h2>{startupName || 'cloud-run-ai-1 | Google Codelabs'}</h2>
+                    <h2>{startupName || 'Hacklabvify | AI Startup Copilot'}</h2>
                   </div>
 
                   <div className="header-controls">
-                    <span className="user-badge">User: {username}</span>
+                    <span className="user-badge">Founder: {username}</span>
                     <button className="text-btn" onClick={handleClearSession}>Clear Session</button>
                     <button className="text-btn" onClick={handleLogout}>Main Page</button>
                     <button className="text-btn" onClick={() => setShowSettingsModal(true)} title="API Settings">⋮</button>
                   </div>
                 </header>
 
-                {/* Chat Messages */}
+                {/* Chat Messages Timeline */}
                 <div className="chat-area">
                   {messages.map((msg, idx) => (
                     <div key={idx} className={`msg-row ${msg.role}`}>
@@ -742,14 +741,14 @@ export default function App() {
                     <div className="msg-row assistant">
                       <BotAvatar />
                       <div className="msg-bubble" style={{ color: 'var(--text-secondary)' }}>
-                        AI analyzing prompt & IDE context...
+                        AI Co-Founder analyzing startup strategy & context...
                       </div>
                     </div>
                   )}
                   <div ref={chatEndRef} />
                 </div>
 
-                {/* Quick Suggestions */}
+                {/* Quick Strategy Suggestions */}
                 <div className="suggestions-container">
                   {QUICK_SUGGESTIONS.map((s, i) => (
                     <button key={i} className="suggestion-chip" onClick={() => callGemini(s.prompt)} disabled={loading}>
@@ -758,10 +757,10 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Input Footer */}
+                {/* Input Footer Pill */}
                 <footer className="chat-footer">
                   <div className="input-pill">
-                    <label htmlFor="file-upload" className="action-btn" title="Add file">
+                    <label htmlFor="file-upload" className="action-btn" title="Add file context">
                       <PlusIcon />
                     </label>
                     <input type="file" id="file-upload" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} accept="image/*,.txt,.js,.py,.json,.md" />
@@ -770,54 +769,54 @@ export default function App() {
                       ref={textareaRef}
                       className="chat-input-textarea"
                       rows={1}
-                      placeholder="Ask a question about the codelab..."
+                      placeholder="Ask your AI co-founder anything (e.g., 'How do we lower CAC?')..."
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyDown={handleKeyDown}
                       disabled={loading}
                     />
 
-                    <button className="send-btn-round" onClick={handleSend} disabled={!input.trim() || loading} title="Send">
+                    <button className="send-btn-round" onClick={handleSend} disabled={!input.trim() || loading} title="Send Message">
                       <UpArrowIcon />
                     </button>
                   </div>
 
                   {attachedFile && (
                     <div style={{ marginTop: '6px', fontSize: '11px', color: '#3B82F6', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      📎 Attached: {attachedFile.name}
+                      📎 Attached Context: {attachedFile.name}
                       <button style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer' }} onClick={() => setAttachedFile(null)}>✕</button>
                     </div>
                   )}
                 </footer>
               </div>
 
-              {/* Right Column: IDE Context Tools */}
+              {/* Right Column: IDE & Co-Founder Context Tooling */}
               <div className="context-tools-col">
                 <h3 className="context-title">IDE Context Tooling</h3>
 
                 <div className="context-section">
-                  <h4>Paste Code Context</h4>
+                  <h4>Paste Code & Architecture Context</h4>
                   <input
                     type="text"
                     className="context-input"
-                    placeholder="Code Filename (e.g., app.py)"
+                    placeholder="Code Filename (e.g., App.jsx, schema.sql)"
                     value={codeFilename}
                     onChange={(e) => setCodeFilename(e.target.value)}
                   />
                   <textarea
                     className="context-textarea large"
                     style={{ marginTop: '8px' }}
-                    placeholder="Paste your raw code buffer here..."
+                    placeholder="Paste your raw code buffer or architecture spec here..."
                     value={codeContext}
                     onChange={(e) => setCodeContext(e.target.value)}
                   />
                 </div>
 
                 <div className="context-section">
-                  <h4>Terminal Errors</h4>
+                  <h4>Terminal & Build Tracebacks</h4>
                   <textarea
                     className="context-textarea"
-                    placeholder="Paste command line tracebacks or errors here..."
+                    placeholder="Paste command line tracebacks, API errors, or build logs here..."
                     value={terminalErrors}
                     onChange={(e) => setTerminalErrors(e.target.value)}
                   />
@@ -841,8 +840,8 @@ export default function App() {
                 </div>
 
                 <div className="context-hint">
-                  <p>💡 <i>Any active Code or Terminal text entered here will be automatically extracted and bundled securely into your message when you hit the primary SEND button on the left!</i></p>
-                  <p style={{ marginTop: '8px' }}>💡 <i>Standard conversational questions, or errors from other places, should just be described and copy/pasted directly into the chat box!</i></p>
+                  <p>💡 <i>Any active Code, Terminal text, or Financial metrics entered here will be automatically extracted and bundled securely into your message when you hit the primary SEND button on the left!</i></p>
+                  <p style={{ marginTop: '8px' }}>💡 <i>Standard startup questions, pitch deck inquiries, or market queries should be typed directly into the chat box!</i></p>
                 </div>
               </div>
             </>
