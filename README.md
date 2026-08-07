@@ -6,16 +6,17 @@
 
   [![Team CYBERNEX](https://img.shields.io/badge/Team-CYBERNEX-FF4D6D?style=for-the-badge&logo=rocket&logoColor=white)](#-built-by-team-cybernex)
   [![Problem Statement 10](https://img.shields.io/badge/Hackathon-Problem_Statement_10-8B5CF6?style=for-the-badge&logo=target&logoColor=white)](#-problem-statement--objective)
+  [![UI Theme](https://img.shields.io/badge/UI-Interactive_Nebula_&_Glassmorphism-00D4AA?style=for-the-badge&logo=css3&logoColor=white)](#-ui--interactive-features)
   [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
   [![Vite](https://img.shields.io/badge/Vite-6.0.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
   [![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.6_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
   [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
   <p align="center">
-    <strong>Hacklabvify</strong> is an advanced AI-powered co-founder platform developed by <strong>Team CYBERNEX</strong> for <strong>Problem Statement 10: AI Startup Copilot</strong>. Driven by <strong>Google Gemini 3.6 Flash</strong>, it provides instant market research, business planning, competitor analysis, fundraising prep, financial runway optimization, task management, and strategic decision support.
+    <strong>Hacklabvify</strong> is a state-of-the-art interactive AI-powered co-founder platform developed by <strong>Team CYBERNEX</strong> for <strong>Problem Statement 10: AI Startup Copilot</strong>. Driven by <strong>Google Gemini 3.6 Flash</strong>, it provides an animated nebula glassmorphic interface, dual-column IDE context tooling, multi-language support, market research playbooks, competitor analysis, pitch deck outlines, and financial runway optimization.
   </p>
 
-  [Problem Statement](#-problem-statement--objective) • [Features](#-key-features) • [Playbooks](#-strategy-playbooks-alignment) • [Getting Started](#-getting-started) • [Architecture](#-project-structure)
+  [Problem Statement](#-problem-statement--objective) • [Interactive Features](#-ui--interactive-features) • [Playbooks](#-strategy-playbooks-alignment) • [Getting Started](#-getting-started) • [Architecture](#-project-structure)
 
 </div>
 
@@ -25,13 +26,12 @@
 
 - [🎯 Problem Statement & Objective](#-problem-statement--objective)
 - [🚀 Project Overview](#-project-overview)
-- [✨ Key Features & Enhancements](#-key-features--enhancements)
+- [✨ UI & Interactive Features](#-ui--interactive-features)
 - [🎯 Strategy Playbooks Alignment](#-strategy-playbooks-alignment)
 - [👥 Built by Team CYBERNEX](#-built-by-team-cybernex)
 - [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
 - [📥 Getting Started](#-getting-started)
 - [📁 Project Structure](#-project-structure)
-- [🎨 UI & Design Highlights](#-ui--design-highlights)
 - [📄 License](#-license)
 
 ---
@@ -50,75 +50,60 @@
 
 Building a startup is fast-paced and challenging. Founders often lack immediate access to experienced advisors for critical decisions regarding market positioning, fundraising, go-to-market strategies, and risk mitigation.
 
-Engineered specifically for **Problem Statement 10**, **Hacklabvify** by **Team CYBERNEX** bridges this gap:
+Engineered specifically for **Problem Statement 10**, **Hacklabvify** by **Team CYBERNEX** bridges this gap with an ultra-interactive **Dual-Column IDE Co-Founder Workspace**:
 
-1. **Contextual Intelligence**: Customizes advice based on your startup's exact stage (*Idea*, *MVP*, *Beta*, *Revenue*, *Scaling*), industry, and vision.
-2. **Instant Strategy Execution**: Single-click playbooks for TAM/SAM/SOM, ICP, Competitive Moats, Business Models, and Pitch Deck Outlines.
-3. **Task & Decision Support**: Guarantees **⚡ Your Next 3 Actions** in every response so founders take immediate, high-impact steps.
-4. **Financial Runway Calculator**: Calculates net monthly burn, cash runway months, and triggers 1-click AI burn optimization strategies.
-5. **Session & Knowledge Locker**: Save key strategic insights, search chat history in real-time, and export full advisory reports in `.md`, `.txt`, or `.json`.
+1. **Dual-Column IDE Layout**: Left column for advisory chat & playbooks, right column for active code buffers, terminal traceback errors, and financial runway modelers.
+2. **Multi-Language Support**: Complete internationalization (8 languages: English, Español, Français, Deutsch, Hindi, 日本語, 简体中文, Português).
+3. **Animated Organic Nebula Theme**: Dynamic ambient glowing spheres with instant Light / Dark mode toggle.
+4. **Contextual Intelligence**: Customizes advice based on your startup's exact stage (*Idea*, *MVP*, *Beta*, *Revenue*, *Scaling*), industry, and vision.
+5. **Instant Strategy Execution**: Single-click playbooks for TAM/SAM/SOM, ICP, Competitive Moats, Business Models, and Pitch Deck Outlines.
 
 ---
 
-## ✨ Key Features & Enhancements
+## ✨ UI & Interactive Features
+
+<details open>
+<summary><strong>🌌 Animated Organic Nebula Background & Theme Switcher</strong></summary>
+
+- Floating blurred ambient spheres (`blob-1`, `blob-2`, `blob-3`) with smooth CSS keyframe movement (`blobFloat`).
+- Sun / Moon floating button toggling between **Deep Space Dark Glassmorphism** and **Clean Glass Light Theme**.
+</details>
+
+<details open>
+<summary><strong>🖥️ Dual-Column Co-Founder IDE Workspace</strong></summary>
+
+- **Left Column**: Main Advisory Chat timeline, Quick Strategy Playbooks bar, Speech-to-Text Voice Dictation, File Uploader (+ file preview chip area).
+- **Right Column (IDE Context Tooling Panel)**:
+  - **Code & Architecture Buffer**: Paste code/architecture snippets to bundle with AI queries.
+  - **Terminal Error & Traceback Inspector**: Paste command line tracebacks or logs.
+  - **Financial Runway Modeler**: Live inputs for Cash, Expenses, Revenue, Net Burn, and Financial Health badges.
+</details>
+
+<details open>
+<summary><strong>🌐 Multi-Language (i18n) Selection</strong></summary>
+
+- Select between **8 languages** directly in the header; system instructions dynamically prompt Gemini to reply in the user's selected language.
+</details>
+
+<details open>
+<summary><strong>📎 File Attachment & Voice Dictation</strong></summary>
+
+- Drag & drop or click file attachment (+ file preview chip area) to bundle pitch deck notes or code into Gemini prompts.
+- Native Web Speech API voice dictation for hands-free prompt entry.
+</details>
 
 <details open>
 <summary><strong>🚀 1-Click Demo Startup Presets</strong></summary>
 
-- Instantly load realistic pre-configured startup profiles:
+- Load pre-configured startup profiles in 1 click:
   - 🤖 **DevPulse AI** (DevTools & AI • MVP Stage)
   - 🩺 **MediMind** (HealthTech & AI • Idea Stage)
   - 💳 **PayFlow Global** (FinTech • Revenue Stage)
-- Enables judges and users to evaluate strategy playbooks in 1 click without manual data entry.
-</details>
-
-<details open>
-<summary><strong>🎭 Multi-Persona AI Tone Selector</strong></summary>
-
-- Toggle AI co-founder advisor tones:
-  - ⚡ **YC Partner**: Direct, speed & metrics-driven, growth focus.
-  - 🛡️ **Risk & Legal Expert**: Focuses on compliance, security, IP & contract safeguards.
-  - 🚀 **Growth Lead**: Focuses on virality, CAC reduction, LTV & funnel optimization.
-</details>
-
-<details open>
-<summary><strong>💰 Financial Runway & Burn Rate Calculator</strong></summary>
-
-- Interactive financial modeling widget:
-  - Cash Balance ($), Monthly Expenses ($), Monthly Revenue ($).
-  - Calculates Net Monthly Burn, Cash Runway (Months), and Financial Health Indicators (🟢 Healthy / 🟡 Moderate / 🔴 Critical / 💎 Net Profitable).
-  - 1-click **⚡ AI Runway Optimization** to generate cost reduction & revenue acceleration roadmaps.
-</details>
-
-<details open>
-<summary><strong>🔑 In-App Gemini API Key Configuration</strong></summary>
-
-- Floating settings gear icon in top header allowing users and judges to enter or update their custom Google Gemini API Key directly in the UI with instant `localStorage` persistence.
-</details>
-
-<details open>
-<summary><strong>🎙️ Voice Input (Speech-to-Text Dictation)</strong></summary>
-
-- Native Web Speech API integration (`webkitSpeechRecognition`) for hands-free prompt dictation.
-</details>
-
-<details open>
-<summary><strong>💾 Persistent LocalStorage Engine</strong></summary>
-
-- Automatically syncs startup profiles, chat history, persona selections, financial inputs, and bookmarked insights to `localStorage` so browser reloads never lose session progress.
-</details>
-
-<details open>
-<summary><strong>📥 Multi-Format Session Exporters</strong></summary>
-
-- Export session logs as **Markdown (`.md`)**, **Plain Text (`.txt`)**, or **JSON Data (`.json`)**.
 </details>
 
 ---
 
 ## 🎯 Strategy Playbooks Alignment
-
-Here is how **Hacklabvify** fulfills every core requirement of **Problem Statement 10**:
 
 | Problem Statement Pillar | Hacklabvify Feature / Playbook | Key Value Delivered |
 | :--- | :--- | :--- |
@@ -127,7 +112,8 @@ Here is how **Hacklabvify** fulfills every core requirement of **Problem Stateme
 | **Competitor Analysis** | 🏆 Competitor Analysis | Top 5 competitors breakdown, differentiators & competitive moat definition |
 | **Fundraising Prep** | 💰 Pitch Prep & 📊 Pitch Deck | 10-slide deck outline, investor narrative, objection handling & key metrics |
 | **Strategic Decision Support**| ⚠️ Risk Assessment & 🎭 Persona Tone | Risk mitigation matrix, regulatory & IP safeguards, YC Partner evaluation |
-| **Financial & Business Planning** | 💰 Runway Calculator Widget | Net burn calculation, runway months, automated AI burn optimization |
+| **Financial & Business Planning** | 💰 Runway Modeler | Net burn calculation, runway months, automated AI burn optimization |
+| **IDE & Context Integration** | 🖥️ Dual-Column Context Panel | Code buffer, terminal traceback inspector, file uploader context bundling |
 | **Task Management** | ⚡ Next 3 Actions & Saved Insights | Immediate 3-step action items per prompt & bookmarkable insight locker |
 
 ---
@@ -146,7 +132,7 @@ Hacklabvify is engineered and presented by **Team CYBERNEX**.
 - **Build Tooling & Dev Server**: [Vite 6](https://vitejs.dev/)
 - **AI Intelligence**: [Google Gemini 3.6 Flash API](https://ai.google.dev/)
 - **Styling & Theme**: Modern Vanilla CSS3 (Custom Glassmorphism, CSS Variables, Responsive Layout)
-- **Typography**: Google Fonts (*Inter*, *Space Grotesk*, *JetBrains Mono*)
+- **Typography**: Google Fonts (*Inter*, *Space Grotesk*, *Outfit*, *JetBrains Mono*)
 
 ---
 
@@ -195,16 +181,8 @@ hacklabvify/
 ├── README.md             # Project documentation (Problem Statement 10 & Team CYBERNEX)
 └── src/
     ├── main.jsx          # React app DOM mounting point
-    └── App.jsx           # Core Application Logic, Presets, Financial Calculator & Glassmorphic UI
+    └── App.jsx           # Core Application Logic, Nebula Glassmorphic UI & Dual-Column Panel
 ```
-
----
-
-## 🎨 UI & Design Highlights
-
-- **Palette**: Deep space navy tones (`#080C14`, `#0F1623`) contrasted with vibrant electric blue (`#3B6FFF`) and neon emerald (`#00D4AA`).
-- **Micro-Animations**: Smooth scale transitions on button hover, pulse effects on active AI loading state, dynamic toast slide-in notifications.
-- **Accessibility & UX**: Speech-to-text dictation, keyboard shortcuts (`Enter` to submit, `Shift+Enter` for newlines), responsive sidebar & collapsible tab views.
 
 ---
 
