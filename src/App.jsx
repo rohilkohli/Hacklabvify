@@ -724,28 +724,46 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .main-container-card {
           width: 100%; max-width: 1100px; height: 88vh; max-height: 820px;
           border-radius: 24px; display: flex; overflow: hidden;
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
           transition: all 0.3s ease;
         }
 
+        /* Dark Theme Reduced Opacity Liquid Glass */
         .theme-dark .main-container-card {
-          background: rgba(22, 30, 44, 0.62);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.7), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+          background: linear-gradient(135deg, rgba(15, 23, 42, 0.42) 0%, rgba(30, 41, 59, 0.32) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.7), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+          backdrop-filter: blur(16px) saturate(180%);
+          -webkit-backdrop-filter: blur(16px) saturate(180%);
         }
 
+        .theme-dark .context-section {
+          background: rgba(30, 41, 59, 0.45);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .theme-dark .msg-row.assistant .msg-bubble {
+          background: rgba(30, 41, 59, 0.5);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        /* Light Theme Backdrop Glass Effect */
         .theme-light .main-container-card {
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.4) 100%);
-          border: 1.5px solid rgba(255, 255, 255, 0.92);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.25) 100%);
+          border: 1.5px solid rgba(255, 255, 255, 0.95);
           box-shadow: 
-            0 30px 70px -12px rgba(15, 23, 42, 0.14),
+            0 30px 70px -12px rgba(15, 23, 42, 0.12),
             inset 0 1px 2px 0 rgba(255, 255, 255, 0.98),
             inset 0 -1px 1px 0 rgba(0, 0, 0, 0.03);
+          backdrop-filter: blur(20px) saturate(200%);
+          -webkit-backdrop-filter: blur(20px) saturate(200%);
         }
 
         .theme-light .context-section {
-          background: rgba(255, 255, 255, 0.55);
+          background: rgba(255, 255, 255, 0.45);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           border: 1px solid rgba(255, 255, 255, 0.85);
@@ -753,7 +771,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         }
 
         .theme-light .msg-row.assistant .msg-bubble {
-          background: rgba(255, 255, 255, 0.75);
+          background: rgba(255, 255, 255, 0.65);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           border: 1px solid rgba(255, 255, 255, 0.9);
