@@ -656,10 +656,11 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           position: absolute;
           inset: 0;
           background:
-            radial-gradient(circle at 16% 18%, rgba(59, 130, 246, 0.18), transparent 26%),
-            radial-gradient(circle at 84% 24%, rgba(16, 185, 129, 0.13), transparent 24%),
-            radial-gradient(circle at 74% 82%, rgba(245, 158, 11, 0.12), transparent 26%),
-            linear-gradient(135deg, transparent 0%, var(--wave-glow-color) 46%, transparent 74%);
+            radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.35), transparent 40%),
+            radial-gradient(circle at 80% 25%, rgba(139, 92, 246, 0.3), transparent 38%),
+            radial-gradient(circle at 70% 80%, rgba(245, 158, 11, 0.25), transparent 35%),
+            radial-gradient(circle at 30% 75%, rgba(16, 185, 129, 0.25), transparent 35%);
+          filter: blur(40px);
         }
 
         .waves-container {
@@ -703,7 +704,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           width: 44px; height: 44px; border-radius: 50%;
           background: var(--card-bg); border: 1px solid var(--card-border);
           color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center;
-          box-shadow: var(--shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: all 0.2s ease;
+          box-shadow: var(--shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transition: all 0.2s ease;
         }
         .top-theme-btn:hover { transform: scale(1.08); border-color: var(--accent-blue); }
 
@@ -711,7 +712,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           position: absolute; top: 1.2rem; right: 1.5rem; z-index: 100;
           padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card-border);
           background: var(--card-bg); color: var(--text-primary); font-family: inherit; font-size: 0.85rem; font-weight: 500;
-          cursor: pointer; box-shadow: var(--shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); outline: none; transition: all 0.2s ease;
+          cursor: pointer; box-shadow: var(--shadow); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); outline: none; transition: all 0.2s ease;
         }
         .top-lang-select:hover { border-color: var(--accent-blue); }
 
@@ -724,35 +725,38 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .main-container-card {
           width: 100%; max-width: 1100px; height: 88vh; max-height: 820px;
           border-radius: 24px; display: flex; overflow: hidden;
+          position: relative; z-index: 10;
+          transform: translateZ(0);
+          will-change: backdrop-filter, -webkit-backdrop-filter;
           transition: all 0.3s ease;
         }
 
         /* Dark Theme Reduced Opacity Liquid Glass */
         .theme-dark .main-container-card {
-          background: linear-gradient(135deg, rgba(15, 23, 42, 0.42) 0%, rgba(30, 41, 59, 0.32) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.7), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
-          backdrop-filter: blur(16px) saturate(180%);
-          -webkit-backdrop-filter: blur(16px) saturate(180%);
+          background: linear-gradient(135deg, rgba(15, 23, 42, 0.45) 0%, rgba(30, 41, 59, 0.35) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.7), inset 0 1px 1px 0 rgba(255, 255, 255, 0.22);
+          -webkit-backdrop-filter: blur(24px) saturate(190%);
+          backdrop-filter: blur(24px) saturate(190%);
         }
 
         .theme-dark .context-section {
           background: rgba(30, 41, 59, 0.45);
-          backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .theme-dark .msg-row.assistant .msg-bubble {
           background: rgba(30, 41, 59, 0.5);
-          backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.14);
         }
 
         /* Light Theme Backdrop Glass Effect */
         .theme-light .main-container-card {
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.25) 100%);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.32) 100%);
           border: 1.5px solid rgba(255, 255, 255, 0.95);
           box-shadow: 
             0 30px 70px -12px rgba(15, 23, 42, 0.12),
