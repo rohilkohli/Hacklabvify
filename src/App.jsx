@@ -1030,7 +1030,7 @@ export default function App() {
         {/* ── Main Chat Area ── */}
         <main className="chat-main">
           <header className="chat-header">
-            <div style={{ display: 'flex', align-items: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '15px' }}>⚡</span>
               <h2 style={{ fontFamily: 'Space Grotesk', fontSize: '15px', fontWeight: 700 }}>{startupName || 'AI Startup Copilot'}</h2>
               {contextSet && <span style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', fontSize: '10px', padding: '2px 8px', borderRadius: '10px', textTransform: 'uppercase', fontWeight: 600 }}>{stage}</span>}
@@ -1086,7 +1086,7 @@ export default function App() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letter-spacing: '0.08em', color: 'var(--text-muted)' }}>Or choose a demo startup:</div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Or choose a demo startup:</div>
                   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
                     {PRESET_STARTUPS.map((p) => (
                       <button key={p.name} className="suggestion-chip" onClick={() => handleApplyPreset(p)}>
