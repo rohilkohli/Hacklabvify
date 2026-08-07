@@ -847,7 +847,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           {!sessionActive ? (
             <div className="login-view-container">
               <div className="login-header">
-                <h1>Hacklabvify — AI Startup Copilot</h1>
+                <h1>FounderNexus — AI Startup Copilot</h1>
                 <p>Team CYBERNEX • Problem Statement 10: AI Startup Copilot & Strategic Growth Assistant</p>
               </div>
 
@@ -898,7 +898,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                 <header className="chat-header">
                   <div className="codelab-title">
                     <span style={{ color: '#3B82F6' }}>🔹</span>
-                    <h2>{startupName || 'Hacklabvify | AI Startup Copilot'}</h2>
+                    <h2>{startupName || 'FounderNexus | AI Startup Copilot'}</h2>
                   </div>
 
                   <div className="header-controls">

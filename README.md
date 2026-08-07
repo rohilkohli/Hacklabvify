@@ -1,6 +1,6 @@
 <div align="center">
 
-  # ⚡ HACKLABVIFY
+  # ⚡ FounderNexus
 
   ### *Team CYBERNEX — AI Startup Copilot (Problem Statement 10)*
 
@@ -13,7 +13,7 @@
   [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
   <p align="center">
-    <strong>Hacklabvify</strong> is a state-of-the-art interactive AI-powered co-founder platform developed by <strong>Team CYBERNEX</strong> for <strong>Problem Statement 10: AI Startup Copilot</strong>. Driven by <strong>Google Gemini 3.6 Flash</strong>, it provides an animated nebula glassmorphic interface, dual-column IDE context tooling, multi-language support, market research playbooks, competitor analysis, pitch deck outlines, and financial runway optimization.
+    <strong>FounderNexus</strong> is a state-of-the-art interactive AI-powered co-founder platform developed by <strong>Team CYBERNEX</strong> for <strong>Problem Statement 10: AI Startup Copilot</strong>. Driven by <strong>Google Gemini 3.6 Flash</strong>, it provides an animated glassmorphic interface, dual-column IDE context tooling, multi-language support, market research playbooks, competitor analysis, pitch deck outlines, and financial runway optimization.
   </p>
 
   [Problem Statement](#-problem-statement--objective) • [Interactive Features](#-ui--interactive-features) • [Playbooks](#-strategy-playbooks-alignment) • [Getting Started](#-getting-started) • [Architecture](#-project-structure)
@@ -50,11 +50,11 @@
 
 Building a startup is fast-paced and challenging. Founders often lack immediate access to experienced advisors for critical decisions regarding market positioning, fundraising, go-to-market strategies, and risk mitigation.
 
-Engineered specifically for **Problem Statement 10**, **Hacklabvify** by **Team CYBERNEX** bridges this gap with an ultra-interactive **Dual-Column IDE Co-Founder Workspace**:
+Engineered specifically for **Problem Statement 10**, **FounderNexus** by **Team CYBERNEX** bridges this gap with an ultra-interactive **Dual-Column IDE Co-Founder Workspace**:
 
 1. **Dual-Column IDE Layout**: Left column for advisory chat & playbooks, right column for active code buffers, terminal traceback errors, and financial runway modelers.
 2. **Multi-Language Support**: Complete internationalization (8 languages: English, Español, Français, Deutsch, Hindi, 日本語, 简体中文, Português).
-3. **Animated Organic Nebula Theme**: Dynamic ambient glowing spheres with instant Light / Dark mode toggle.
+3. **Animated Organic Grid Theme**: Dynamic dot-grid background with floating color nodes and instant Light / Dark mode toggle.
 4. **Contextual Intelligence**: Customizes advice based on your startup's exact stage (*Idea*, *MVP*, *Beta*, *Revenue*, *Scaling*), industry, and vision.
 5. **Instant Strategy Execution**: Single-click playbooks for TAM/SAM/SOM, ICP, Competitive Moats, Business Models, and Pitch Deck Outlines.
 
@@ -63,10 +63,10 @@ Engineered specifically for **Problem Statement 10**, **Hacklabvify** by **Team 
 ## ✨ UI & Interactive Features
 
 <details open>
-<summary><strong>🌌 Animated Organic Nebula Background & Theme Switcher</strong></summary>
+<summary><strong>🌌 Dot Grid Background & Theme Switcher</strong></summary>
 
-- Floating blurred ambient spheres (`blob-1`, `blob-2`, `blob-3`) with smooth CSS keyframe movement (`blobFloat`).
-- Sun / Moon floating button toggling between **Deep Space Dark Glassmorphism** and **Clean Glass Light Theme**.
+- Radial dot grid mesh pattern with floating color nodes (`🔵`, `🟡`, `🟢`, `🔴`).
+- Floating Sun / Moon button toggling between **Deep Space Dark Glassmorphism** and **Clean Grid Light Theme**.
 </details>
 
 <details open>
@@ -74,13 +74,14 @@ Engineered specifically for **Problem Statement 10**, **Hacklabvify** by **Team 
 
 - **Left Column**: Main Advisory Chat timeline, Quick Strategy Playbooks bar, Speech-to-Text Voice Dictation, File Uploader (+ file preview chip area).
 - **Right Column (IDE Context Tooling Panel)**:
-  - **Code & Architecture Buffer**: Paste code/architecture snippets to bundle with AI queries.
-  - **Terminal Error & Traceback Inspector**: Paste command line tracebacks or logs.
-  - **Financial Runway Modeler**: Live inputs for Cash, Expenses, Revenue, Net Burn, and Financial Health badges.
+  - **Code & Architecture Buffer**: Paste code/architecture snippets to bundle with AI queries (+ Sample button & Clear button).
+  - **Terminal Error & Traceback Inspector**: Paste command line tracebacks or logs (+ Sample button & Clear button).
+  - **Financial Runway Modeler**: Live inputs for Cash, Expenses, Revenue, Net Burn, and Financial Health badges (+ ⚡ AI Optimize button).
+  - **Bookmarked Insights Locker**: Persistent drawer for saved strategic insights with 1-click Copy and Remove.
 </details>
 
 <details open>
-<summary><strong>🌐 Multi-Language (i18n) Selection</strong></summary>
+<summary><strong>🌐 Multi-Language Selection</strong></summary>
 
 - Select between **8 languages** directly in the header; system instructions dynamically prompt Gemini to reply in the user's selected language.
 </details>
@@ -88,7 +89,7 @@ Engineered specifically for **Problem Statement 10**, **Hacklabvify** by **Team 
 <details open>
 <summary><strong>📎 File Attachment & Voice Dictation</strong></summary>
 
-- Drag & drop or click file attachment (+ file preview chip area) to bundle pitch deck notes or code into Gemini prompts.
+- Drag & drop or click file attachment to bundle pitch deck notes or code into Gemini prompts.
 - Native Web Speech API voice dictation for hands-free prompt entry.
 </details>
 
@@ -105,7 +106,7 @@ Engineered specifically for **Problem Statement 10**, **Hacklabvify** by **Team 
 
 ## 🎯 Strategy Playbooks Alignment
 
-| Problem Statement Pillar | Hacklabvify Feature / Playbook | Key Value Delivered |
+| Problem Statement Pillar | FounderNexus Feature / Playbook | Key Value Delivered |
 | :--- | :--- | :--- |
 | **Market Research** | 🔍 Market Research Playbook | TAM / SAM / SOM calculation, key industry trends, target customer segments |
 | **Business Planning** | 💡 Business Model & 📋 GTM Plan | Monetization strategies, pricing models, 90-day launch roadmap |
@@ -120,7 +121,7 @@ Engineered specifically for **Problem Statement 10**, **Hacklabvify** by **Team 
 
 ## 👥 Built by Team CYBERNEX
 
-Hacklabvify is engineered and presented by **Team CYBERNEX**. 
+FounderNexus is engineered and presented by **Team CYBERNEX**. 
 
 > *"Empowering founders and hackathon innovators with real-time AI strategic intelligence."*
 
@@ -172,8 +173,8 @@ Hacklabvify is engineered and presented by **Team CYBERNEX**.
 ## 📁 Project Structure
 
 ```
-hacklabvify/
-├── index.html            # Main HTML entry point with web font imports
+foundernexus/
+├── index.html            # Main HTML entry point with web font imports & title
 ├── package.json          # Dependency specs & script definitions
 ├── vite.config.js        # Vite bundler configuration
 ├── .gitignore            # Git exclusion rules
@@ -181,7 +182,7 @@ hacklabvify/
 ├── README.md             # Project documentation (Problem Statement 10 & Team CYBERNEX)
 └── src/
     ├── main.jsx          # React app DOM mounting point
-    └── App.jsx           # Core Application Logic, Nebula Glassmorphic UI & Dual-Column Panel
+    └── App.jsx           # FounderNexus Core Logic, UI & Dual-Column IDE Panel
 ```
 
 ---
