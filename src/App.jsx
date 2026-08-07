@@ -710,6 +710,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           border-radius: 12px; padding: 11px 14px; font-size: 13.5px; color: var(--text-primary); outline: none;
         }
         .input-login:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .input-login option { background: var(--card-bg); color: var(--text-primary); }
 
         .glow-start-btn {
           width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
@@ -982,15 +983,23 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                   required
                 />
 
-                <select
+                <input
+                  type="text"
                   className="input-login"
+                  placeholder="What's your startup name? (e.g., Acme AI)"
                   value={startupName}
                   onChange={(e) => setStartupName(e.target.value)}
+                  required
+                />
+
+                <select
+                  className="input-login"
+                  value={stage}
+                  onChange={(e) => setStage(e.target.value)}
                 >
-                  <option value="" disabled>Select startup stage or demo profile...</option>
-                  <option value="DevPulse AI">DevPulse AI (DevTools & AI • MVP Stage)</option>
-                  <option value="MediMind">MediMind (HealthTech & AI • Idea Stage)</option>
-                  <option value="PayFlow Global">PayFlow Global (FinTech • Revenue Stage)</option>
+                  {STAGE_OPTIONS.map((st) => (
+                    <option key={st} value={st}>{st} Stage</option>
+                  ))}
                 </select>
 
                 <button type="submit" className="glow-start-btn">Start Co-Founder Session</button>
