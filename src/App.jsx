@@ -614,26 +614,26 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           --shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         }
 
-        /* ── Light Theme Variables ── */
+        /* ── Light Theme Liquid Glass Variables ── */
         .theme-light {
-          --bg-dot: #F8FAFC;
+          --bg-dot: #F1F5F9;
           --dot-color: rgba(71, 85, 105, 0.25);
-          --grid-line-color: rgba(203, 213, 225, 0.45);
-          --card-bg: #FFFFFF;
-          --card-border: #E2E8F0;
-          --left-bg: #FFFFFF;
-          --right-bg: #FAFCFF;
-          --header-bg: #F1F5F9;
+          --grid-line-color: rgba(203, 213, 225, 0.5);
+          --card-bg: rgba(255, 255, 255, 0.75);
+          --card-border: rgba(255, 255, 255, 0.9);
+          --left-bg: rgba(255, 255, 255, 0.65);
+          --right-bg: rgba(248, 250, 252, 0.55);
+          --header-bg: rgba(241, 245, 249, 0.85);
           --text-primary: #0F172A;
           --text-secondary: #475569;
           --text-muted: #94A3B8;
-          --input-bg: #F1F5F9;
-          --input-border: #CBD5E1;
+          --input-bg: rgba(255, 255, 255, 0.85);
+          --input-border: rgba(203, 213, 225, 0.7);
           --accent-blue: #2563EB;
-          --accent-glow: rgba(37, 99, 235, 0.12);
+          --accent-glow: rgba(37, 99, 235, 0.15);
           --btn-hover: #1D4ED8;
-          --code-bg: #F8FAFC;
-          --shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+          --code-bg: rgba(248, 250, 252, 0.9);
+          --shadow: 0 30px 60px -12px rgba(15, 23, 42, 0.12), 0 18px 36px -18px rgba(0, 0, 0, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
         }
 
         html, body, #root, .app-root { height: 100%; overflow: hidden; }
@@ -672,7 +672,7 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           width: 44px; height: 44px; border-radius: 50%;
           background: var(--card-bg); border: 1px solid var(--card-border);
           color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center;
-          box-shadow: var(--shadow); transition: all 0.2s ease;
+          box-shadow: var(--shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: all 0.2s ease;
         }
         .top-theme-btn:hover { transform: scale(1.08); border-color: var(--accent-blue); }
 
@@ -680,11 +680,11 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           position: absolute; top: 1.2rem; right: 1.5rem; z-index: 100;
           padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card-border);
           background: var(--card-bg); color: var(--text-primary); font-family: inherit; font-size: 0.85rem; font-weight: 500;
-          cursor: pointer; box-shadow: var(--shadow); outline: none; transition: all 0.2s ease;
+          cursor: pointer; box-shadow: var(--shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); outline: none; transition: all 0.2s ease;
         }
         .top-lang-select:hover { border-color: var(--accent-blue); }
 
-        /* ── Centered Main Container Card ── */
+        /* ── Centered Main Container Card & Liquid Glass ── */
         .app-window-wrapper {
           position: relative; z-index: 10; display: flex; align-items: center; justify-content: center;
           height: 100vh; width: 100vw; padding: 24px;
@@ -694,6 +694,29 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           width: 100%; max-width: 1100px; height: 88vh; max-height: 820px;
           background: var(--card-bg); border: 1px solid var(--card-border);
           border-radius: 24px; box-shadow: var(--shadow); display: flex; overflow: hidden;
+          backdrop-filter: blur(24px) saturate(180%);
+          -webkit-backdrop-filter: blur(24px) saturate(180%);
+        }
+
+        .theme-light .main-container-card {
+          background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.55) 100%);
+          border: 1.5px solid rgba(255, 255, 255, 0.95);
+        }
+
+        .theme-light .context-section {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.9);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+        }
+
+        .theme-light .msg-row.assistant .msg-bubble {
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.95);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
 
         /* ── Start Mission / Welcome View ── */
