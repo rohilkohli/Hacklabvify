@@ -3,63 +3,52 @@ import React from 'react';
 export function BorderBeam({
   children,
   className = '',
-  duration = 6,
+  duration = 7,
   borderWidth = 1.5,
-  colorFrom = '#3B82F6',
-  colorTo = '#10B981',
-  borderRadius = '12px',
+  colorFrom = '#F59E0B',
+  colorTo = '#EC4899',
+  borderRadius = '20px',
   style = {}
 }) {
   return (
     <div
-      className={`border-beam-container ${className}`}
+      className={`border-beam-wrapper ${className}`}
       style={{
         position: 'relative',
         borderRadius: borderRadius,
-        padding: `${borderWidth}px`,
-        overflow: 'hidden',
         width: '100%',
         boxSizing: 'border-box',
-        background: `linear-gradient(135deg, ${colorFrom}33, ${colorTo}33)`,
-        boxShadow: `0 0 14px ${colorFrom}20`,
+        display: 'flex',
+        flexDirection: 'column',
         ...style
       }}
     >
       <style>{`
-        @keyframes borderBeamSpinMove {
+        @keyframes borderBeamRotate {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
       `}</style>
-      
-      {/* Spinning Conic Gradient bounded strictly by parent overflow: hidden */}
+
+      {/* Single Moving Glowing Light Streak Beam along perimeter border */}
       <div
         style={{
           position: 'absolute',
-          top: '-75%',
-          left: '-75%',
-          width: '250%',
-          height: '250%',
-          background: `conic-gradient(from 0deg, transparent 0deg, ${colorFrom} 70deg, ${colorTo} 140deg, transparent 210deg)`,
-          animation: `borderBeamSpinMove ${duration}s linear infinite`,
+          inset: -borderWidth,
+          borderRadius: `calc(${borderRadius} + ${borderWidth}px)`,
+          padding: `${borderWidth}px`,
+          background: `conic-gradient(from 0deg, transparent 0deg, transparent 290deg, ${colorFrom} 335deg, ${colorTo} 360deg)`,
+          animation: `borderBeamRotate ${duration}s linear infinite`,
+          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+          WebkitMaskComposite: 'xor',
+          maskComposite: 'exclude',
           pointerEvents: 'none',
-          zIndex: 1,
+          zIndex: 10,
+          filter: `drop-shadow(0 0 4px ${colorFrom}) drop-shadow(0 0 8px ${colorTo})`,
         }}
       />
 
-      {/* Inner Content Layer masking the center */}
-      <div
-        style={{
-          position: 'relative',
-          borderRadius: `calc(${borderRadius} - ${borderWidth}px)`,
-          overflow: 'hidden',
-          width: '100%',
-          height: '100%',
-          zIndex: 2,
-        }}
-      >
-        {children}
-      </div>
+      {children}
     </div>
   );
 }
