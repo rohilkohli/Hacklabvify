@@ -1087,17 +1087,21 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
                   />
                 </BorderBeam>
 
-                <select
-                  className="input-login"
-                  value={stage}
-                  onChange={(e) => setStage(e.target.value)}
-                >
-                  {STAGE_OPTIONS.map((st) => (
-                    <option key={st} value={st}>{st} Stage</option>
-                  ))}
-                </select>
+                <BorderBeam borderRadius="12px" duration={8} colorFrom="#F59E0B" colorTo="#3B82F6">
+                  <select
+                    className="input-login"
+                    value={stage}
+                    onChange={(e) => setStage(e.target.value)}
+                  >
+                    {STAGE_OPTIONS.map((st) => (
+                      <option key={st} value={st}>{st} Stage</option>
+                    ))}
+                  </select>
+                </BorderBeam>
 
-                <button type="submit" className="glow-start-btn">Start Co-Founder Session</button>
+                <BorderBeam borderRadius="24px" duration={6} colorFrom="#3B82F6" colorTo="#10B981">
+                  <button type="submit" className="glow-start-btn" style={{ margin: 0 }}>Start Co-Founder Session</button>
+                </BorderBeam>
               </form>
 
               <div style={{ marginTop: '20px', display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
