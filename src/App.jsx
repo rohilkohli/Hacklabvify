@@ -796,8 +796,52 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
         .login-view-container::-webkit-scrollbar { width: 4px; }
         .login-view-container::-webkit-scrollbar-thumb { background: var(--card-border); }
 
-        .login-header h1 { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; color: #3B82F6; margin-bottom: 6px; }
-        .login-header p { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 20px; }
+        .login-header {
+          width: 100%;
+          max-width: 660px;
+          margin-bottom: 22px;
+        }
+        .login-header h1 {
+          font-family: 'Outfit', sans-serif;
+          font-size: clamp(42px, 7vw, 74px);
+          line-height: 0.96;
+          font-weight: 800;
+          letter-spacing: 0;
+          margin-bottom: 16px;
+          color: #F8FAFC;
+          background: linear-gradient(135deg, #F8FAFC 0%, #93C5FD 44%, #22D3EE 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-shadow: 0 18px 46px rgba(59, 130, 246, 0.22);
+        }
+        .login-header p {
+          position: relative;
+          max-width: 590px;
+          font-size: 15.5px;
+          line-height: 1.7;
+          font-weight: 500;
+          color: var(--text-secondary);
+          margin: 0 auto;
+        }
+        .login-header p::after {
+          content: '';
+          display: block;
+          width: 76px;
+          height: 2px;
+          margin: 18px auto 0;
+          border-radius: 999px;
+          background: linear-gradient(90deg, transparent, #38BDF8, #F59E0B, transparent);
+          opacity: 0.85;
+        }
+        .theme-light .login-header h1 {
+          color: #0F172A;
+          background: linear-gradient(135deg, #0F172A 0%, #2563EB 48%, #0891B2 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-shadow: 0 18px 36px rgba(37, 99, 235, 0.12);
+        }
 
         .login-tips { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 480px; margin-bottom: 20px; }
         .tip-item {
@@ -1072,8 +1116,8 @@ Uncaught SyntaxError: Unexpected token 'export' (at App.jsx:12:45)
           {!sessionActive ? (
             <div className="login-view-container">
               <div className="login-header">
-                <h1>FounderNexus — AI Startup Copilot</h1>
-                <p>Team CYBERNEX • Problem Statement 10: AI Startup Copilot & Strategic Growth Assistant</p>
+                <h1>FounderNexus</h1>
+                <p>Private strategic intelligence for founders building with precision, clarity, and investor-grade conviction.</p>
               </div>
 
               <div className="login-tips">
