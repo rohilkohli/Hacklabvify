@@ -179,8 +179,8 @@ export default function InteractiveWaves() {
 
       ctx.clearRect(0, 0, bounding.width, bounding.height);
       ctx.beginPath();
-      ctx.strokeStyle = getComputedStyle(container).getPropertyValue('--wave-line-color').trim() || 'rgba(59, 130, 246, 0.28)';
-      ctx.lineWidth = 0.65;
+      ctx.strokeStyle = getComputedStyle(container).getPropertyValue('--wave-line-color').trim() || 'rgba(212, 113, 78, 0.40)';
+      ctx.lineWidth = 0.85;
 
       lines.forEach((points) => {
         const p1 = moved(points[0], false);
