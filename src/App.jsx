@@ -1,6 +1,6 @@
 // src/App.jsx
-// Root application orchestrator — state management fully delegated to Zustand stores.
-// Provider-agnostic AI calls routed via AIService & AIProviderFactory.
+// Root application orchestrator — maintains signature card layout, top controls, and kinetic wave background.
+// Integrates Raycast Command Palette, Thinking Indicator, 16 C-Suite Board, Tasks, and Health Radar into Right Tools Panel.
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { buildSystemPrompt, buildRunwayPrompt, buildUnitEconomicsPrompt, buildCapTablePrompt, buildInvestorMemoPrompt } from './engine/prompt.engine.js';
@@ -14,11 +14,13 @@ import { useCompanyStore } from './store/companyStore.js';
 import { useChatStore } from './store/chatStore.js';
 import { useFinanceStore } from './store/financeStore.js';
 
-// Components
+// Components & Modals
 import InteractiveWaves from './components/ui/interactive-waves.jsx';
-import { SunIcon, MoonIcon, BotAvatar } from './components/icons.jsx';
+import { SunIcon, MoonIcon } from './components/icons.jsx';
 import { MessageBubble } from './components/chat/MessageBubble.jsx';
+import { ThinkingIndicator } from './components/chat/ThinkingIndicator.jsx';
 import { InputComposer } from './components/chat/InputComposer.jsx';
+import { CommandPalette } from './components/common/CommandPalette.jsx';
 import { RightPanel } from './components/panel/RightPanel.jsx';
 import { ErrorBoundary } from './components/layout/ErrorBoundary.jsx';
 
@@ -52,6 +54,7 @@ export function AppContent() {
   const [langOpen, setLangOpen] = useState(false);
   const [guideExpanded, setGuideExpanded] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [isCmdOpen, setIsCmdOpen] = useState(false);
   const [tempApiKey, setTempApiKey] = useState(customApiKey);
   const [toastMsg, setToastMsg] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
@@ -67,7 +70,7 @@ export function AppContent() {
     setTimeout(() => setToastVisible(false), 2200);
   }, []);
 
-  // Initialize theme attribute on mount
+  // Theme Sync
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
@@ -108,8 +111,16 @@ export function AppContent() {
 
   const handleLaunchWithPrompt = (prompt) => {
     const name = startupName.trim() || 'DevPulse AI';
-    startSession(username || 'Founder', name, stage);
+    if (!sessionActive) startSession(username || 'Founder', name, stage);
     sendMessage(prompt, systemPrompt);
+  };
+
+  const handleCommandPaletteAction = (type, value) => {
+    if (type === 'prompt') {
+      handleLaunchWithPrompt(value);
+    } else if (type === 'openPalette') {
+      setIsCmdOpen(true);
+    }
   };
 
   const handleLogout = () => {
@@ -234,7 +245,7 @@ export function AppContent() {
         {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
       </button>
 
-      {/* Language Selector */}
+      {/* Language Dropdown */}
       <div className="top-lang-dropdown" ref={langRef}>
         <button className={`top-lang-pill ${langOpen ? 'open' : ''}`} onClick={() => setLangOpen(p => !p)}>
           <span style={{ fontSize: '12px' }}>🌐</span>
@@ -255,6 +266,13 @@ export function AppContent() {
       </div>
 
       <Toast message={toastMsg} visible={toastVisible} />
+
+      {/* Command Palette */}
+      <CommandPalette
+        isOpen={isCmdOpen}
+        onClose={() => setIsCmdOpen(false)}
+        onSelectAction={handleCommandPaletteAction}
+      />
 
       {/* Settings Modal */}
       {showSettingsModal && (
@@ -325,7 +343,7 @@ export function AppContent() {
             </div>
 
           ) : (
-            /* VIEW 2: Active Workspace */
+            /* VIEW 2: Active Dual-Column Workspace */
             <>
               {/* Left Column: Advisory Chat */}
               <div className="chat-left-col">
@@ -347,6 +365,7 @@ export function AppContent() {
                   </div>
 
                   <div className="header-controls">
+                    <button className="mini-link-btn" onClick={() => setIsCmdOpen(true)} title="Command Palette (Cmd+K)">⌘K</button>
                     <span className="user-badge">{username}</span>
                     <button className="text-btn" onClick={() => clearSessionMessages(startupName)}>{t.clear}</button>
                     <button className="text-btn" onClick={handleLogout}>{t.home}</button>
@@ -382,7 +401,7 @@ export function AppContent() {
                     <div className="empty-state">
                       <div className="starter-grid">
                         {QUICK_SUGGESTIONS.map((s, i) => (
-                          <button key={i} className="starter-card" onClick={() => handleLaunchWithPrompt(s.prompt)} disabled={loading}>
+                          <button key={i} className="starter-card" onClick={() => sendMessage(s.prompt, systemPrompt)} disabled={loading}>
                             <span className="starter-card-icon">{['🔍', '🏆', '💰', '📊'][i % 4]}</span>
                             <div className="starter-card-title">{s.label}</div>
                           </button>
@@ -392,18 +411,7 @@ export function AppContent() {
                     </div>
                   )}
 
-                  {loading && (
-                    <div className="msg-row assistant">
-                      <BotAvatar thinking={true} />
-                      <div className="msg-wrapper">
-                        <div className="msg-bubble" style={{ padding: '8px 4px' }}>
-                          <div className="loading-dots">
-                            <div className="loading-dot" /><div className="loading-dot" /><div className="loading-dot" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  {loading && <ThinkingIndicator />}
                   <div ref={chatEndRef} />
                 </div>
 
@@ -474,6 +482,7 @@ export function AppContent() {
                 onAskCapTable={askCapTable}
                 onAskMemo={askMemo}
                 onCopyMemo={copyMemo}
+                onAskPrompt={(prompt) => handleLaunchWithPrompt(prompt)}
                 onToast={showToast}
               />
             </>

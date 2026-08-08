@@ -1,13 +1,16 @@
 // src/components/panel/RightPanel.jsx
-// Right column orchestrator. Manages tab switching and routes to sub-panels.
+// Right column orchestrator for all Co-Founder Tools tabs.
 
 import { useState, useCallback } from 'react';
 import { ADVISOR_PERSONAS } from '../../config/constants.js';
+import { CompanyBrainTab } from './CompanyBrainTab.jsx';
+import { ExecutiveBoardTab } from './ExecutiveBoardTab.jsx';
+import { TaskPlannerTab } from './TaskPlannerTab.jsx';
+import { StartupHealthTab } from './StartupHealthTab.jsx';
 import { FinancialsTab } from './FinancialsTab.jsx';
 import { PitchTab } from './PitchTab.jsx';
 import { MemoTab } from './MemoTab.jsx';
 import { SavedTab } from './SavedTab.jsx';
-import { CompanyBrainTab } from './CompanyBrainTab.jsx';
 
 export function RightPanel({
   t,
@@ -17,7 +20,7 @@ export function RightPanel({
   savedInsights, onCopyMessage, onDeleteBookmark,
   onExportSession, startupName, stage, activePersonaObj, pitchSlides,
   onAskRunway, onAskUnitEcon, onAskCapTable, onAskMemo, onCopyMemo,
-  onToast,
+  onAskPrompt, onToast,
 }) {
   const [activeTab, setActiveTab] = useState('brain');
 
@@ -56,13 +59,16 @@ export function RightPanel({
       </div>
 
       {/* Tab Bar */}
-      <div className="right-tab-bar" role="tablist">
+      <div className="right-tab-bar" role="tablist" style={{ flexWrap: 'wrap' }}>
         {[
-          { id: 'brain', label: t.tabBrain },
+          { id: 'brain', label: `🧠 ${t.tabBrain}` },
+          { id: 'board', label: '👔 Board' },
           { id: 'financials', label: `📊 ${t.tabFinancials}` },
+          { id: 'tasks', label: '📋 Tasks' },
+          { id: 'health', label: '🩺 Health' },
           { id: 'pitch', label: `🎴 ${t.tabPitch}` },
           { id: 'memo', label: `📝 ${t.tabMemo}` },
-          { id: 'saved', label: `🔖 ${t.tabSaved} (${savedInsights.length})` },
+          { id: 'saved', label: `🔖 (${savedInsights.length})` },
         ].map(({ id, label }) => (
           <button
             key={id}
@@ -70,6 +76,7 @@ export function RightPanel({
             aria-selected={activeTab === id}
             className={`right-tab-btn ${activeTab === id ? 'active' : ''}`}
             onClick={() => setActiveTab(id)}
+            style={{ fontSize: '10px', padding: '6px 4px' }}
           >
             {label}
           </button>
@@ -84,6 +91,18 @@ export function RightPanel({
           completionScore={brainCompletionScore}
           t={t}
         />
+      )}
+
+      {activeTab === 'board' && (
+        <ExecutiveBoardTab onToast={onToast} />
+      )}
+
+      {activeTab === 'tasks' && (
+        <TaskPlannerTab onToast={onToast} />
+      )}
+
+      {activeTab === 'health' && (
+        <StartupHealthTab onAskHealthDiagnostic={(prompt) => onAskPrompt?.(prompt)} />
       )}
 
       {activeTab === 'financials' && (
